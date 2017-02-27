@@ -16,7 +16,7 @@ class CodeTest extends End2EndTest
         $classGenerator = new ClassGenerator('Tests\IfStatementTest', true);
 
         $method = $classGenerator->addPublicMethod("sayIf");
-        $method->addParameter("int", "int");
+        $method->addParameter("int", "int", null, 'This explains Why');
         $method->setReturnType("int", false);
 
         $method->addIfStart('$int === 1');
@@ -37,6 +37,12 @@ class CodeTest extends End2EndTest
         $this->assertSame(2, $ifObject->sayIf(2));
         $this->assertSame(3, $ifObject->sayIf(15));
 
+        $reflectionClass = $this->getReflectClass($classGenerator);
+        $reflectionMethod = $reflectionClass->getMethod("sayIf");
+
+        $this->assertNotNull($reflectionMethod);
+
+        $this->assertTrue(strpos($reflectionMethod->getDocComment(), 'This explains Why') !== false);
     }
 
     public function testWhileStatement()

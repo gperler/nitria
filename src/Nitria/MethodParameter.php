@@ -26,17 +26,24 @@ class MethodParameter
     protected $defaultValue;
 
     /**
+     * @var string
+     */
+    protected $docComment;
+
+    /**
      * MethodParameter constructor.
      *
      * @param Type $type
      * @param string $name
-     * @param string $defaultValue
+     * @param string|null $defaultValue
+     * @param string $docComment
      */
-    public function __construct(Type $type, string $name, string $defaultValue = null)
+    public function __construct(Type $type, string $name, string $defaultValue = null, $docComment = null)
     {
         $this->type = $type;
         $this->name = $name;
         $this->defaultValue = $defaultValue;
+        $this->docComment = $docComment;
     }
 
     /**
@@ -44,7 +51,11 @@ class MethodParameter
      */
     public function getPHPDocLine()
     {
-        return '@param ' . $this->type->getDocBlockType() . ' $' . $this->name;
+        $docBlockLine = '@param ' . $this->type->getDocBlockType() . ' $' . $this->name;
+        if ($this->docComment !== null) {
+            $docBlockLine .= $this->docComment;
+        }
+        return $docBlockLine;
     }
 
     /**
