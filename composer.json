@@ -1,0 +1,27 @@
+{
+  "name": "gm314/nitria",
+  "description": "php7 class generator",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Gregor Müller"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "require-dev": {
+    "codeception/codeception": "*"
+  },
+  "autoload": {
+    "psr-0": {
+      "Nitria\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NitriaTest\\": "tests"
+    }
+  }
+}
