@@ -29,6 +29,15 @@ value `19.08`.
  $classGenerator->addProperty("myName","float","private", true, '19.08');
 ````
 
+This will result in the following code
+
+````php
+    /**
+     * @var float
+     */
+    private $myName = 19.08;
+````       
+
 Or you can use the short version for non static properties.
 ````php
 // add property
