@@ -1,9 +1,9 @@
 # Nitria PHP 7 Code Generator
 
-[![License](https://poser.pugx.org/gm314/siesta/license)](https://packagist.org/packages/gm314/siesta)
-[![Latest Stable Version](https://poser.pugx.org/gm314/siesta/v/stable)](https://packagist.org/packages/gm314/siesta)
-[![Total Downloads](https://poser.pugx.org/gm314/siesta/downloads)](https://packagist.org/packages/gm314/siesta)
-[![Latest Unstable Version](https://poser.pugx.org/gm314/siesta/v/unstable)](https://packagist.org/packages/gm314/siesta)
+[![License](https://poser.pugx.org/gm314/nitria/license)](https://packagist.org/packages/gm314/siesta)
+[![Latest Stable Version](https://poser.pugx.org/gm314/nitria/v/stable)](https://packagist.org/packages/gm314/siesta)
+[![Total Downloads](https://poser.pugx.org/gm314/nitria/downloads)](https://packagist.org/packages/gm314/siesta)
+[![Latest Unstable Version](https://poser.pugx.org/gm314/nitria/v/unstable)](https://packagist.org/packages/gm314/siesta)
 
 Class generator for php 7 code. It will take care of indentation, use statements, php doc creation.
 
