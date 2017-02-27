@@ -1,5 +1,6 @@
 # Nitria PHP 7 Code Generator
 
+[![Build Status](https://travis-ci.org/gperler/nitria.svg?branch=master)](https://travis-ci.org/gperler/nitria)
 [![License](https://poser.pugx.org/gm314/nitria/license)](https://packagist.org/packages/gm314/siesta)
 [![Latest Stable Version](https://poser.pugx.org/gm314/nitria/v/stable)](https://packagist.org/packages/gm314/siesta)
 [![Total Downloads](https://poser.pugx.org/gm314/nitria/downloads)](https://packagist.org/packages/gm314/siesta)
