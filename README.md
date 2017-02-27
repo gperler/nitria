@@ -1,6 +1,6 @@
 # Nitria
 
-Class generator for php code. It will take care of identation, use statements, php doc creation.
+Class generator for php 7 code. It will take care of indentation, use statements, php doc creation.
 
 # Usage
 
@@ -8,12 +8,15 @@ Create a class and set extends and implements
 ````php
 
 $classGenerator = new ClassGenerator("Generated\\MyClass", true);
+
+// add extends statement
 $classGenerator->setExtends("BaseClass\\ClassName");
+
+// add implement statement
 $classGenerator->addImplements("\\Serializable");
 
 // add a constant
 $classGenerator->addConstant("CONSTANT_STRING", '"hello"');
-
 ````
 
 # Properties
@@ -36,6 +39,7 @@ $classGenerator->addPublicProperty("iAmPublic", "float");
 
 And for the static properties.
 ````php
+// add static property
 $classGenerator->addPrivateStaticProperty("iAmPrivatStatic", "int");
 $classGenerator->addProtectedStaticProperty("iAmProtectedStatic", "bool");
 $classGenerator->addPublicStaticProperty("iAmPublicStatic", "array");
@@ -46,26 +50,30 @@ $classGenerator->addPublicStaticProperty("iAmPublicStatic", "array");
 
 ````php
 $method = $classGenerator->addPublicMethod("myFunction");
-$method->addParameter("string", "parameterName", '"defaultValue"');
+$method->addParameter("string", "parameterName", '"defaultValue!"');
 $method->addParameter("\\DateTime", "datetime");
 
 // the method will have a return type string that is not nullable
 $method->setReturnType("string", false);
 $method->addCodeLine('return $parameterName;');
-
 ````
 
 the above code will generate the following method
 
 ````php
 
-public function myFunction(string $parameterName = "defaultValue", \DateTime $datetime) : string {
+/**
+ * @param string $parameterName
+ * @param \DateTime $datetime
+ * @return string
+ */
+public function myFunction(string $parameterName = "defaultValue!", \DateTime $datetime) : string {
     return $parameterName;   
 }
-
 ````
 
 ````php
+// method generation
 $classGenerator->addPrivateMethod("iAmPrivate");
 $classGenerator->addProtectedMethod("iAmProtected");
 $classGenerator->addPublicMethod("iAmPublic");
@@ -99,7 +107,6 @@ $method->setReturnType("int", false);
 // start if statement >> if ($int ===1) {
 $method->addIfStart('$int === 1');
 $method->addCodeLine('return 1;');
-
 
 // add if else statement >> } else if ($int === 2) {
 $method->addIfElseIf('$int === 2');
