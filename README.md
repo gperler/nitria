@@ -26,7 +26,7 @@ will generate a `static` `private` property with the name `myName` and the defau
 value `19.08`.
 
 ````php
- $classGenerator->addProperty("myName","float","private", true, '19.08');
+ $classGenerator->addProperty("myName","float","private", false, '19.08');
 ````
 
 This will result in the following code
