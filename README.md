@@ -191,3 +191,9 @@ $method->addSwitchBreak();
 
 $method->addSwitchEnd();
 ````
+
+# Tests / More examples
+
+See under tests/End2End
+* GeneratorTest
+* CodeTest
