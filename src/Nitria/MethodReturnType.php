@@ -59,14 +59,6 @@ class MethodReturnType
     }
 
     /**
-     * @param string $docBlockReturnType
-     */
-    public function setDocBlockReturnType(string $docBlockReturnType)
-    {
-        $this->docBlockReturnType = $docBlockReturnType;
-    }
-
-    /**
      * @return bool
      */
     public function hasReturnType() : bool
