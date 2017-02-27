@@ -69,21 +69,21 @@ class Method
      * @param string $name
      * @param string $modifier
      * @param bool $static
-     * @param string $indent
      */
-    public function __construct(ClassGenerator $classGenerator, string $name, string $modifier, bool $static, string $indent)
+    public function __construct(ClassGenerator $classGenerator, string $name, string $modifier, bool $static)
     {
         $this->classGenerator = $classGenerator;
         $this->name = $name;
         $this->modifier = $modifier;
         $this->static = $static;
-        $this->indent = $indent;
         $this->methodReturnType = new MethodReturnType();
         $this->methodParameterList = [];
-        $this->methodSignature = new CodeWriter($indent);
-        $this->methodBody = new CodeWriter($indent);
         $this->currentIndent = 2;
         $this->constructor = $name === '__construct';
+
+        $this->indent = $classGenerator->getIndent();
+        $this->methodSignature = new CodeWriter($this->indent);
+        $this->methodBody = new CodeWriter($this->indent);
     }
 
     /**
@@ -115,9 +115,6 @@ class Method
      */
     public function hasReturnType() : bool
     {
-        if ($this->methodReturnType === null) {
-            return false;
-        }
         return $this->methodReturnType->hasReturnType();
     }
 

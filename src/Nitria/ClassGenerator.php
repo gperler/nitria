@@ -67,7 +67,6 @@ class ClassGenerator
     public function __construct(string $className, bool $strictTypes = true, string $indent = "    ")
     {
         $this->className = new ClassName($className);
-
         $this->usedClassNameList = [];
         $this->extendsClassShortName = null;
         $this->implementClassNameList = [];
@@ -92,13 +91,10 @@ class ClassGenerator
         $psr0Path = $this->getPSR0Path();
 
         $directoryPath = $basePath . DIRECTORY_SEPARATOR . $psr0Path;
-        $directory = new File($directoryPath);
-        $directory->createDir();
+        is_dir($directoryPath) || mkdir($directoryPath, 0777, true);
 
-        $targetFileName = $directoryPath . DIRECTORY_SEPARATOR . $this->className->getClassShortName() . ".php";
-        $targetFile = new File($targetFileName);
-
-        $targetFile->putContents($this->codeWriter->getCode());
+        $targetFileName = $basePath . DIRECTORY_SEPARATOR . $this->getPSR0File();
+        file_put_contents($targetFileName, $this->codeWriter->getCode());
     }
 
     /**
@@ -373,6 +369,14 @@ class ClassGenerator
     }
 
     /**
+     * @return Method
+     */
+    public function addConstructor()
+    {
+        return $this->addMethod("__construct");
+    }
+
+    /**
      * @param string $name
      * @param string $modifier
      * @param bool $static
@@ -381,7 +385,17 @@ class ClassGenerator
      */
     public function addMethod(string $name, string $modifier = "public", bool $static = false) : Method
     {
-        $method = new Method($this, $name, $modifier, $static, $this->indent);
+        $method = new Method($this, $name, $modifier, $static);
+        return $this->addMethodObject($method);
+    }
+
+    /**
+     * @param Method $method
+     *
+     * @return Method
+     */
+    public function addMethodObject(Method $method) : Method
+    {
         $this->methodList[] = $method;
         return $method;
     }
@@ -420,4 +434,14 @@ class ClassGenerator
     {
         return $this->getPSR0Path() . DIRECTORY_SEPARATOR . trim($this->getClassShortName(), "\\") . ".php";
     }
+
+
+    /**
+     * @return string
+     */
+    public function getIndent(): string
+    {
+        return $this->indent;
+    }
+
 }

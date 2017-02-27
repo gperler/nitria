@@ -15,6 +15,7 @@ class MethodReturnTypeTest extends \PHPUnit_Framework_TestCase
         $methodReturnType = new MethodReturnType(null);
         $this->assertSame("@return void", $methodReturnType->getDocBlockReturnType());
         $this->assertSame("", $methodReturnType->getSignatureReturnType());
+        $this->assertFalse($methodReturnType->hasReturnType());
     }
 
     public function testReturnType()
@@ -23,6 +24,7 @@ class MethodReturnTypeTest extends \PHPUnit_Framework_TestCase
         $methodReturnType = new MethodReturnType($type, false);
         $this->assertSame("@return int", $methodReturnType->getDocBlockReturnType());
         $this->assertSame(" : int", $methodReturnType->getSignatureReturnType());
+        $this->assertTrue($methodReturnType->hasReturnType());
     }
 
     public function testOptionalReturnType()
@@ -31,6 +33,7 @@ class MethodReturnTypeTest extends \PHPUnit_Framework_TestCase
         $methodReturnType = new MethodReturnType($type, true);
         $this->assertSame("@return int|null", $methodReturnType->getDocBlockReturnType());
         $this->assertSame("", $methodReturnType->getSignatureReturnType());
+        $this->assertTrue($methodReturnType->hasReturnType());
     }
 
     public function testArrayReturnType()
@@ -39,6 +42,9 @@ class MethodReturnTypeTest extends \PHPUnit_Framework_TestCase
         $methodReturnType = new MethodReturnType($type, false);
         $this->assertSame("@return \\SomeClass[]", $methodReturnType->getDocBlockReturnType());
         $this->assertSame(" : array", $methodReturnType->getSignatureReturnType());
+        $this->assertTrue($methodReturnType->hasReturnType());
     }
+
+
 
 }

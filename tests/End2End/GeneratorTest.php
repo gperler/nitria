@@ -15,8 +15,6 @@ class GeneratorTest extends End2EndTest
 
     const INTERFACE_NAME_2 = 'NitriaTest\End2End\Asset\SomeOtherInterface';
 
-
-
     /**
      *
      */
@@ -29,6 +27,17 @@ class GeneratorTest extends End2EndTest
 
         $reflectClass = $this->getReflectClass($classGenerator);
         $this->assertSame($className, $reflectClass->getName());
+    }
+
+    public function testSameNamespaceImport()
+    {
+        $className = 'SameNamespace\ClassGenerationTest';
+        $classGenerator = new ClassGenerator($className, true);
+        $classGenerator->writeToPSR0(self::BASE_DIR);
+
+        $classGenerator = new ClassGenerator('SameNamespace\OtherClass', true);
+        $classGenerator->addUsedClassName($className);
+        $classGenerator->writeToPSR0(self::BASE_DIR);
     }
 
     /**
@@ -141,17 +150,22 @@ class GeneratorTest extends End2EndTest
     public function testStaticMember()
     {
         $classGenerator = new ClassGenerator('Tests\StaticMemberTest', true);
+        $classGenerator->addUsedClassName("\\DateTime");
         $classGenerator->addPrivateStaticProperty("iAmPrivat", self::INTERFACE_NAME_1);
         $classGenerator->addProtectedStaticProperty("iAmProtected", self::OTHER_CLASS_1);
         $classGenerator->addPublicStaticProperty("iAmPublic", "float");
+        $classGenerator->addPublicStaticProperty("iAmPublicToo", "\\DateTime");
+
         $classGenerator->writeToPSR0(self::BASE_DIR);
 
         $reflectClass = $this->getReflectClass($classGenerator);
         $staticProperties = $reflectClass->getStaticProperties();
-        $this->assertSame(3, sizeof($staticProperties));
+        $this->assertSame(4, sizeof($staticProperties));
         $this->assertTrue(array_key_exists("iAmPrivat", $staticProperties));
         $this->assertTrue(array_key_exists("iAmProtected", $staticProperties));
         $this->assertTrue(array_key_exists("iAmPublic", $staticProperties));
+        $this->assertTrue(array_key_exists("iAmPublicToo", $staticProperties));
+
     }
 
     /**
@@ -185,6 +199,8 @@ class GeneratorTest extends End2EndTest
         $classGenerator->addProtectedMethod("iAmProtected");
         $classGenerator->addPublicMethod("iAmPublic");
 
+        $classGenerator->addConstructor();
+
         $classGenerator->writeToPSR0(self::BASE_DIR);
 
         $reflectClass = $this->getReflectClass($classGenerator);
@@ -198,6 +214,37 @@ class GeneratorTest extends End2EndTest
         $publicMethod = $reflectClass->getMethod("iAmPublic");
         $this->assertTrue($publicMethod->isPublic());
 
+        $constructor = $reflectClass->getConstructor();
+        $this->assertTrue($constructor->isPublic());
+
+    }
+
+    /**
+     *
+     */
+    public function testStaticMethod()
+    {
+        $classGenerator = new ClassGenerator('StaticMethodTest', false);
+        $classGenerator->addPrivateStaticMethod("iAmPrivate");
+        $classGenerator->addProtectedStaticMethod("iAmProtected");
+        $classGenerator->addPublicStaticMethod("iAmPublic");
+
+        $classGenerator->addUsedClassName("\\DateTime");
+        $classGenerator->writeToPSR0(self::BASE_DIR);
+
+        $reflectClass = $this->getReflectClass($classGenerator);
+
+        $privateMethod = $reflectClass->getMethod("iAmPrivate");
+        $this->assertTrue($privateMethod->isPrivate());
+        $this->assertTrue($privateMethod->isStatic());
+
+        $protectedMethod = $reflectClass->getMethod("iAmProtected");
+        $this->assertTrue($protectedMethod->isProtected());
+        $this->assertTrue($protectedMethod->isStatic());
+
+        $publicMethod = $reflectClass->getMethod("iAmPublic");
+        $this->assertTrue($publicMethod->isPublic());
+        $this->assertTrue($publicMethod->isStatic());
     }
 
     /**
@@ -266,6 +313,7 @@ class GeneratorTest extends End2EndTest
         $method = $classGenerator->addPublicMethod("simpleReturnTypeNullable");
         $method->setReturnType("int", true);
         $method->addCodeLine('return 7;');
+        $this->assertTrue($method->hasReturnType());
 
         $method = $classGenerator->addPublicMethod("defaultNamespaceReturnType");
         $method->setReturnType("\\PHPUnit_Framework_TestCase", true);
@@ -275,6 +323,7 @@ class GeneratorTest extends End2EndTest
         $method->setReturnType(null, false);
         $method->addParameter(null, "mixed");
         $method->addCodeLine('return [];');
+        $this->assertFalse($method->hasReturnType());
 
         $classGenerator->writeToPSR0(self::BASE_DIR);
     }

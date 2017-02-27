@@ -108,7 +108,7 @@ class CodeTest extends End2EndTest
 
         $method->addSwitchCase('"b"');
         $method->addCodeLine('return "b";');
-        $method->addSwitchBreak();
+        $method->addSwitchReturnBreak();
 
         $method->addSwitchDefault();
         $method->addCodeLine('return "c";');

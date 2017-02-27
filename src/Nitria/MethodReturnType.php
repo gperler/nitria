@@ -63,7 +63,7 @@ class MethodReturnType
      */
     public function hasReturnType() : bool
     {
-        return ($this->type !== null);
+        return ($this->type !== null) && $this->type->getCodeType() !== null;
     }
 
 }

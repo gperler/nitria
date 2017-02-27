@@ -142,7 +142,7 @@ class CodeWriter
      */
     public function addClassStart(string $classShortName, string $extends = null, array $implementsList = null)
     {
-        $line = 'class ' . $classShortName;
+        $line = 'class ' . trim($classShortName, "\\");
 
         if ($extends !== null) {
             $line .= ' extends ' . $extends;

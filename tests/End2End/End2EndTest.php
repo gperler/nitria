@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace NitriaTest\End2End;
 
 use Nitria\ClassGenerator;
-use Nitria\File;
 
 class End2EndTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +17,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->deleteGeneratedCode();
+        $this->deleteGeneratedCode(self::BASE_DIR);
     }
 
     /**
@@ -27,16 +26,28 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         parent::tearDown();
-        $this->deleteGeneratedCode();
+        $this->deleteGeneratedCode(self::BASE_DIR);
     }
 
     /**
      *
      */
-    protected function deleteGeneratedCode()
+    protected function deleteGeneratedCode(string $dir)
     {
-        $file = new File(self::BASE_DIR);
-        $file->deleteRecursively();
+        if (!is_dir($dir)) {
+            return;
+        }
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                if (is_dir($dir . "/" . $object)) {
+                    $this->deleteGeneratedCode($dir . "/" . $object);
+                } else {
+                    unlink($dir . "/" . $object);
+                }
+            }
+        }
+        rmdir($dir);
     }
 
     /**
