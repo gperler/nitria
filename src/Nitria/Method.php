@@ -99,7 +99,7 @@ class Method
      */
     public function addParameter(string $typeName = null, string $name, string $defaultValue = null, string $docComment = null)
     {
-        $type = new Type($typeName);
+        $type = new Type($typeName, $this->classGenerator->getUseStatementList());
         $this->classGenerator->addUseClassForType($type);
         $this->methodParameterList[] = new MethodParameter($type, $name, $defaultValue, $docComment);
     }
@@ -110,7 +110,7 @@ class Method
      */
     public function setReturnType(string $typeName = null, bool $nullAble = true)
     {
-        $type = new Type($typeName);
+        $type = new Type($typeName, $this->classGenerator->getUseStatementList());
         $this->classGenerator->addUseClassForType($type);
 
         $this->methodReturnType = new MethodReturnType($type, $nullAble);

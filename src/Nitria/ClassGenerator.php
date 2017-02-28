@@ -33,7 +33,7 @@ class ClassGenerator
     protected $methodList;
 
     /**
-     * @var string[]
+     * @var ClassName[]
      */
     protected $usedClassNameList;
 
@@ -171,10 +171,11 @@ class ClassGenerator
 
     /**
      * @param string $className
+     * @param string|null $as
      */
-    public function addUsedClassName(string $className)
+    public function addUsedClassName(string $className, string $as = null)
     {
-        $class = new ClassName($className);
+        $class = new ClassName($className, $as);
         $this->addUseClassForClassName($class);
     }
 
@@ -194,14 +195,10 @@ class ClassGenerator
      */
     public function addUseClassForClassName(ClassName $className)
     {
-        if ($className->getNamespaceName() === null) {
-            return;
-        }
-
         if ($className->isNamespaceIdentical($this->className)) {
             return;
         }
-        $this->usedClassNameList[] = $className->getClassName();
+        $this->usedClassNameList[] = $className;
     }
 
     /**
@@ -309,7 +306,7 @@ class ClassGenerator
      */
     public function addProperty(string $name, string $typeName, string $modifier = "private", bool $static = false, string $value = null, string $docComment = null)
     {
-        $type = new Type($typeName);
+        $type = new Type($typeName, $this->usedClassNameList);
         $this->addUseClassForType($type);
 
         $this->propertyList[] = new Property($modifier, $name, $type, $static, $this->indent, $value, $docComment);
@@ -448,6 +445,14 @@ class ClassGenerator
     public function getIndent(): string
     {
         return $this->indent;
+    }
+
+    /**
+     * @return ClassName[]
+     */
+    public function getUseStatementList()
+    {
+        return $this->usedClassNameList;
     }
 
 }

@@ -24,33 +24,55 @@ class ClassName
     protected $namespaceName;
 
     /**
-     * PHPClass constructor.
+     * @var string
+     */
+    protected $as;
+
+    /**
+     * ClassName constructor.
      *
      * @param string $className
+     * @param string|null $as
      */
-    public function __construct(string $className)
+    public function __construct(string $className, string $as = null)
     {
-
-        $slashCount = substr_count($className, self::BS);
-
-        if ($slashCount === 0) {
-            $this->className = self::BS . $className;
-            $this->classShortName = self::BS . $className;
-            $this->namespaceName = null;
+        if ($as !== null) {
+            $this->initializeAs($className, $as);
             return;
         }
 
-        if ($slashCount === 1 && strpos($className, self::BS) === 0) {
-
-            $this->classShortName = $className;
-            $this->className = $className;
-            $this->namespaceName = null;
+        $slashCount = substr_count($className, self::BS);
+        if ($slashCount === 0 || ($slashCount === 1 && strpos($className, self::BS) === 0)) {
+            $this->initializeDefaultNamespace($className);
             return;
         }
 
         $this->className = trim($className, self::BS);
         $this->namespaceName = StringUtil::getStartBeforeLast($this->className, self::BS);
         $this->classShortName = StringUtil::getEndAfterLast($this->className, self::BS);
+    }
+
+    /**
+     * @param string $className
+     */
+    protected function initializeDefaultNamespace(string $className)
+    {
+        $className = self::BS . trim($className, "\\");
+        $this->className = $className;
+        $this->classShortName = $className;
+        $this->namespaceName = null;
+    }
+
+    /**
+     * @param string $className
+     * @param string $as
+     */
+    protected function initializeAs(string $className, string $as)
+    {
+        $this->className = trim($className, self::BS);
+        $this->namespaceName = StringUtil::getStartBeforeLast($this->className, self::BS);
+        $this->classShortName = $as;
+        $this->as = $as;
     }
 
     /**
@@ -78,6 +100,14 @@ class ClassName
     }
 
     /**
+     * @return string|null
+     */
+    public function getAs()
+    {
+        return $this->as;
+    }
+
+    /**
      * @param ClassName $otherClass
      *
      * @return bool
@@ -87,4 +117,23 @@ class ClassName
         return $this->namespaceName === $otherClass->getNamespaceName();
     }
 
+    /**
+     * @return null|string
+     */
+    public function getUseStatment()
+    {
+        if ($this->as === null) {
+            return $this->className;
+        }
+        return $this->className . " as " . $this->as;
+
+    }
+
+    /**
+     * @return bool
+     */
+    public function needsUseStatement() : bool
+    {
+        return $this->namespaceName !== null;
+    }
 }

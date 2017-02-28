@@ -108,11 +108,20 @@ class CodeWriter
     }
 
     /**
-     * @param string[] $useStatementList
+     * @param ClassName[] $classNameList
      */
-    public function addUseStatementList(array $useStatementList)
+    public function addUseStatementList(array $classNameList)
     {
+        $useStatementList = [];
+        foreach ($classNameList as $className) {
+            if (!$className->needsUseStatement()) {
+                continue;
+            }
+            $useStatementList[] = $className->getUseStatment();
+        }
+
         $useStatementList = array_unique($useStatementList);
+
         sort($useStatementList);
         foreach ($useStatementList as $useStatement) {
             $this->addCodeLine('use ' . $useStatement . ';', 0, 1);

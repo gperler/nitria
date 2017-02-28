@@ -40,6 +40,39 @@ class GeneratorTest extends End2EndTest
         $classGenerator->writeToPSR0(self::BASE_DIR);
     }
 
+    public function testAsImport()
+    {
+        $className = 'Tests\UseAsClass';
+
+        $classGenerator = new ClassGenerator($className, true);
+        $classGenerator->addUsedClassName('Nitria\StringUtil', 'MyStringUtil');
+        $classGenerator->addUsedClassName('Nitria\Constant', 'MyConstant');
+        $classGenerator->addUsedClassName('Nitria\Property', 'MyProperty');
+
+        $classGenerator->addProtectedProperty("myProp", "MyStringUtil");
+
+        $method = $classGenerator->addMethod("testMethod");
+        $method->addParameter("MyConstant", "paramName");
+        $method->setReturnType("MyProperty", false);
+
+        $classGenerator->writeToPSR0(self::BASE_DIR);
+
+        $classContent = file_get_contents(self::BASE_DIR . DIRECTORY_SEPARATOR . $classGenerator->getPSR0File());
+        $this->assertTrue(strpos($classContent, 'Nitria\StringUtil as MyStringUtil') !== false);
+        $this->assertTrue(strpos($classContent, 'Nitria\Constant as MyConstant') !== false);
+        $this->assertTrue(strpos($classContent, 'Nitria\Property as MyProperty') !== false);
+
+        $reflection = $this->getReflectClass($classGenerator);
+
+        $property = $reflection->getProperty("myProp");
+        $this->assertNotNull($property);
+        $this->assertTrue(strpos($property->getDocComment(), '@var MyStringUtil') !== false);
+
+        $method = $reflection->getMethod("testMethod");
+        $this->assertNotNull($method);
+        $this->assertTrue(strpos($method->getDocComment(), '@param MyConstant $paramName') !== false);
+    }
+
     /**
      *
      */

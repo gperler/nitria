@@ -33,9 +33,10 @@ class Type
     /**
      * Type constructor.
      *
-     * @param string $type
+     * @param string|null $type
+     * @param ClassName[] $registeredClassNameList
      */
-    public function __construct(string $type = null)
+    public function __construct(string $type = null, array $registeredClassNameList = [])
     {
         if ($type === null) {
             return;
@@ -43,8 +44,15 @@ class Type
 
         $type = trim($type);
         $this->isArray = StringUtil::endsWith($type, '[]');
-
         $type = trim($type, '[]');
+
+        // check for use xyz as otherName
+        foreach ($registeredClassNameList as $className) {
+            if ($type === $className->getAs()) {
+                $this->className = $className;
+                return;
+            }
+        }
 
         if (in_array($type, self::SCALAR_TYPE_LIST)) {
             $this->scalarName = $type;
