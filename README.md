@@ -8,6 +8,17 @@
 
 Class generator for php 7 code. It will take care of indentation, use statements, php doc creation.
 
+# Installation
+
+````json
+{
+    "require": {
+        "gm314/nitria": "*"
+    }
+}
+````
+
+
 # Usage
 
 Create a class and set extends and implements
@@ -32,14 +43,14 @@ will generate a `static` `private` property with the name `myName` and the defau
 value `19.08`.
 
 ````php
- $classGenerator->addProperty("myName","float","private", false, '19.08');
+ $classGenerator->addProperty("myName","float","private", false, '19.08', 'doc bloc comment');
 ````
 
 This will result in the following code
 
 ````php
     /**
-     * @var float
+     * @var float doc bloc comment
      */
     private $myName = 19.08;
 ````       

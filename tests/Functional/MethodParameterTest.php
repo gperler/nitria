@@ -28,9 +28,9 @@ class MethodParameterTest extends \PHPUnit_Framework_TestCase
     public function testMethodParameterOptional()
     {
         $type = new Type("\\SomeClass");
-        $methodParameter = new MethodParameter($type, "hello", 'null');
+        $methodParameter = new MethodParameter($type, "hello", 'null', "my doc comment");
 
-        $this->assertSame('@param \\SomeClass $hello', $methodParameter->getPHPDocLine());
+        $this->assertSame('@param \\SomeClass|null $hello my doc comment', $methodParameter->getPHPDocLine());
         $this->assertSame('\\SomeClass $hello = null', $methodParameter->getSignaturePart());
     }
 

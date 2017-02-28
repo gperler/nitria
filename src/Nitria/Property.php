@@ -33,6 +33,11 @@ class Property
     protected $value;
 
     /**
+     * @var string
+     */
+    protected $docComment;
+
+    /**
      * @var CodeWriter
      */
     protected $codeWriter;
@@ -46,14 +51,16 @@ class Property
      * @param bool $static
      * @param string $indent
      * @param string|null $value
+     * @param string|null $docComment
      */
-    public function __construct(string $modifier, string $name, Type $type, bool $static, string $indent, string $value = null)
+    public function __construct(string $modifier, string $name, Type $type, bool $static, string $indent, string $value = null, string $docComment = null)
     {
         $this->modifier = $modifier;
         $this->name = $name;
         $this->type = $type;
         $this->static = $static;
         $this->value = $value;
+        $this->docComment = $docComment;
         $this->codeWriter = new CodeWriter($indent);
     }
 
@@ -72,9 +79,9 @@ class Property
     {
         $this->codeWriter->addEmptyLine();
 
-        $docBlock = [
-            "@var " . $this->type->getDocBlockType()
-        ];
+        $docBlock = ($this->docComment !== null) ? [$this->docComment] : [];
+        $docBlock[] = "@var " . $this->type->getDocBlockType();
+
         $this->codeWriter->addDocBlock($docBlock, 1);
 
         $static = $this->static ? " static" : "";

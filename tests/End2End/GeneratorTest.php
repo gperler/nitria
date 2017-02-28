@@ -328,4 +328,33 @@ class GeneratorTest extends End2EndTest
         $classGenerator->writeToPSR0(self::BASE_DIR);
     }
 
+    /**
+     *
+     */
+    public function testDocComment()
+    {
+
+        $classGenerator = new ClassGenerator('Tests\CommentTest', true);
+
+        $classGenerator->addPrivateProperty("comment", "string", null, "commented member");
+
+        $method = $classGenerator->addPublicMethod("commentedMethod");
+        $method->setDocBlockComment("commented method");
+        $method->setReturnType(self::OTHER_CLASS_1 . '[]', false);
+        $method->addInlineComment("this is really important");
+        $method->addCodeLine('return [];');
+
+        $classGenerator->writeToPSR0(self::BASE_DIR);
+
+        $reflection = $this->getReflectClass($classGenerator);
+
+        $property = $reflection->getProperty("comment");
+        $this->assertNotNull($property);
+        $this->assertTrue(strpos($property->getDocComment(), "commented member") !== false);
+
+        $method = $reflection->getMethod("commentedMethod");
+        $this->assertNotNull($method);
+        $this->assertTrue(strpos($method->getDocComment(), "commented method") !== false);
+    }
+
 }

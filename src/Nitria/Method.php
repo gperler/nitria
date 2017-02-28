@@ -63,6 +63,11 @@ class Method
     protected $currentIndent;
 
     /**
+     * @var string
+     */
+    protected $docBlockComment;
+
+    /**
      * Method constructor.
      *
      * @param ClassGenerator $classGenerator
@@ -286,7 +291,7 @@ class Method
      */
     protected function generateDocBlock()
     {
-        $phpDocBlock = [];
+        $phpDocBlock = $this->docBlockComment !== null ? [$this->docBlockComment] : [];
         foreach ($this->methodParameterList as $parameter) {
             $phpDocBlock[] = $parameter->getPHPDocLine();
         }
@@ -322,6 +327,22 @@ class Method
             $parameterList[] = $parameter->getSignaturePart();
         }
         return implode(", ", $parameterList);
+    }
+
+    /**
+     * @param string $docBlockComment
+     */
+    public function setDocBlockComment(string $docBlockComment)
+    {
+        $this->docBlockComment = $docBlockComment;
+    }
+
+    /**
+     * @param string $inlineComment
+     */
+    public function addInlineComment(string $inlineComment)
+    {
+        $this->addCodeLine("// " . $inlineComment);
     }
 
 }

@@ -237,60 +237,66 @@ class ClassGenerator
      * @param string $name
      * @param string $type
      * @param string|null $value
+     * @param string|null $docComment
      */
-    public function addPublicStaticProperty(string $name, string $type, string $value = null)
+    public function addPublicStaticProperty(string $name, string $type, string $value = null, string $docComment = null)
     {
-        $this->addProperty($name, $type, "public", true, $value);
+        $this->addProperty($name, $type, "public", true, $value, $docComment);
     }
 
     /**
      * @param string $name
      * @param string $type
      * @param string|null $value
+     * @param string|null $docComment
      */
-    public function addProtectedStaticProperty(string $name, string $type, string $value = null)
+    public function addProtectedStaticProperty(string $name, string $type, string $value = null, string $docComment = null)
     {
-        $this->addProperty($name, $type, "protected", true, $value);
+        $this->addProperty($name, $type, "protected", true, $value, $docComment);
     }
 
     /**
      * @param string $name
      * @param string $type
      * @param string|null $value
+     * @param string|null $docComment
      */
-    public function addPrivateStaticProperty(string $name, string $type, string $value = null)
+    public function addPrivateStaticProperty(string $name, string $type, string $value = null, string $docComment = null)
     {
-        $this->addProperty($name, $type, "private", true, $value);
+        $this->addProperty($name, $type, "private", true, $value, $docComment);
     }
 
     /**
      * @param string $name
      * @param string $type
      * @param string|null $value
+     * @param string|null $docComment
      */
-    public function addPublicProperty(string $name, string $type, string $value = null)
+    public function addPublicProperty(string $name, string $type, string $value = null, string $docComment = null)
     {
-        $this->addProperty($name, $type, "public", false, $value);
+        $this->addProperty($name, $type, "public", false, $value, $docComment);
     }
 
     /**
      * @param string $name
      * @param string $type
      * @param string|null $value
+     * @param string|null $docComment
      */
-    public function addProtectedProperty(string $name, string $type, string $value = null)
+    public function addProtectedProperty(string $name, string $type, string $value = null, string $docComment = null)
     {
-        $this->addProperty($name, $type, "protected", false, $value);
+        $this->addProperty($name, $type, "protected", false, $value, $docComment);
     }
 
     /**
      * @param string $name
      * @param string $type
      * @param string|null $value
+     * @param string|null $docComment
      */
-    public function addPrivateProperty(string $name, string $type, string $value = null)
+    public function addPrivateProperty(string $name, string $type, string $value = null, string $docComment = null)
     {
-        $this->addProperty($name, $type, "private", false, $value);
+        $this->addProperty($name, $type, "private", false, $value, $docComment);
     }
 
     /**
@@ -299,13 +305,14 @@ class ClassGenerator
      * @param string $modifier
      * @param bool $static
      * @param string|null $value
+     * @param string|null $docComment
      */
-    public function addProperty(string $name, string $typeName, string $modifier = "private", bool $static = false, string $value = null)
+    public function addProperty(string $name, string $typeName, string $modifier = "private", bool $static = false, string $value = null, string $docComment = null)
     {
         $type = new Type($typeName);
         $this->addUseClassForType($type);
 
-        $this->propertyList[] = new Property($modifier, $name, $type, $static, $this->indent, $value);
+        $this->propertyList[] = new Property($modifier, $name, $type, $static, $this->indent, $value, $docComment);
     }
 
     /**
@@ -434,7 +441,6 @@ class ClassGenerator
     {
         return $this->getPSR0Path() . DIRECTORY_SEPARATOR . trim($this->getClassShortName(), "\\") . ".php";
     }
-
 
     /**
      * @return string
