@@ -1,4 +1,4 @@
-# Nitria PHP 7 Code Generator
+# Nitria PHP7 Code Generator
 
 [![Build Status](https://travis-ci.org/gperler/nitria.svg?branch=master)](https://travis-ci.org/gperler/nitria)
 [![License](https://poser.pugx.org/gm314/nitria/license)](https://packagist.org/packages/gm314/siesta)
@@ -6,7 +6,7 @@
 [![Total Downloads](https://poser.pugx.org/gm314/nitria/downloads)](https://packagist.org/packages/gm314/siesta)
 [![Latest Unstable Version](https://poser.pugx.org/gm314/nitria/v/unstable)](https://packagist.org/packages/gm314/siesta)
 
-Class generator for php 7 code. It will take care of indentation, use statements, php doc creation.
+Class generator for PHP7 code. It will take care of indentation, use statements, php doc creation.
 
 # Installation
 

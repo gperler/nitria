@@ -1,6 +1,6 @@
 {
   "name": "gm314/nitria",
-  "description": "php7 class generator",
+  "description": "PHP 7 Code Generator",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
