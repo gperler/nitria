@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Nitria;
 
+use Civis\Common\StringUtil;
+
 class Type
 {
     const SCALAR_TYPE_LIST = [

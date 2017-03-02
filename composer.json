@@ -9,7 +9,8 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0"
+    "php": ">=7.0.0",
+    "gm314/common" : "*"
   },
   "require-dev": {
     "codeception/codeception": "*"

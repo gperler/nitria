@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Nitria;
 
+use Civis\Common\File;
+
 class ClassGenerator
 {
 
@@ -87,14 +89,10 @@ class ClassGenerator
         $this->generate();
 
         $basePath = rtrim($basePath, DIRECTORY_SEPARATOR);
-
-        $psr0Path = $this->getPSR0Path();
-
-        $directoryPath = $basePath . DIRECTORY_SEPARATOR . $psr0Path;
-        is_dir($directoryPath) || mkdir($directoryPath, 0777, true);
-
         $targetFileName = $basePath . DIRECTORY_SEPARATOR . $this->getPSR0File();
-        file_put_contents($targetFileName, $this->codeWriter->getCode());
+
+        $file = new File($targetFileName);
+        $file->putContents($this->codeWriter->getCode());
     }
 
     /**
