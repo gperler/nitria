@@ -26,7 +26,7 @@ Create a class and set extends and implements
 
 $classGenerator = new ClassGenerator("Generated\\MyClass", true);
 
-// add extends statement
+// add extends statement, a use statement will be added automatically 
 $classGenerator->setExtends("BaseClass\\ClassName");
 
 // add implement statement
@@ -57,8 +57,8 @@ This will result in the following code
 
 Or you can use the short version for non static properties.
 ````php
-// add property
-$classGenerator->addPrivateProperty("iAmPrivat", "\\DateTime");
+// add property (for classes use statement will be added - unless the class is in the same namespace)
+$classGenerator->addPrivateProperty("iAmPrivat", 'MyPackage\MyClass');
 $classGenerator->addProtectedProperty("iAmProtected", "array", []);
 $classGenerator->addPublicProperty("iAmPublic", "float");
 ````
