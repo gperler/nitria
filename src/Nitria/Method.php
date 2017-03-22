@@ -149,6 +149,21 @@ class Method
         $this->methodBody->addCodeLine($content, $this->currentIndent, $lineBreaks);
     }
 
+    public function addNewLine()
+    {
+        $this->methodBody->addCodeLine('', 0, 1);
+    }
+
+    public function incrementIndent()
+    {
+        $this->currentIndent++;
+    }
+
+    public function decrementIndent()
+    {
+        $this->currentIndent--;
+    }
+
     /**
      * @param $condition
      */

@@ -96,6 +96,15 @@ class ClassGenerator
     }
 
     /**
+     * @param string $fileName
+     */
+    public function writeToFile(string $fileName)
+    {
+        $file = new File($fileName);
+        $file->putContents($this->codeWriter->getCode());
+    }
+
+    /**
      *
      */
     protected function generate()
