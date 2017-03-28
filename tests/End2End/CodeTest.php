@@ -133,4 +133,31 @@ class CodeTest extends End2EndTest
 
     }
 
+
+    public function testTryCatchStatement() {
+        $classGenerator = new ClassGenerator('Tests\TryCatchTest', true);
+
+        $method = $classGenerator->addPublicMethod("sayTry");
+        $method->addParameter("string", "value");
+        $method->setReturnType("bool", false);
+
+        $method->addTry();
+        $method->addCodeLine('throw new CustomException();');
+
+        $method->addCatchStart('NitriaTest\End2End\Asset\CustomException', 'e1');
+        $method->addCodeLine('return true;');
+        $method->addCatchStart('\Exception', 'e2');
+        $method->addCodeLine('return false;');
+        $method->addCatchEnd();
+        $method->addCodeLine('return false;');
+
+        $classGenerator->writeToPSR0(self::BASE_DIR);
+
+
+        $tryCatch = $this->getReflectInstance($classGenerator);
+
+        $this->assertTrue($tryCatch->sayTry(""));
+
+    }
+
 }

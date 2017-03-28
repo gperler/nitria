@@ -100,6 +100,7 @@ class ClassGenerator
      */
     public function writeToFile(string $fileName)
     {
+        $this->generate();
         $file = new File($fileName);
         $file->putContents($this->codeWriter->getCode());
     }

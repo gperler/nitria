@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Nitria;
 
+use Civis\Common\StringUtil;
+
 class Method
 {
 
@@ -162,6 +164,28 @@ class Method
     public function decrementIndent()
     {
         $this->currentIndent--;
+    }
+
+    public function addTry()
+    {
+        $this->addCodeLine('try {');
+        $this->incrementIndent();
+    }
+
+    public function addCatchStart(string $className, string $variableName)
+    {
+        $type = new Type($className, $this->classGenerator->getUseStatementList());
+        $this->classGenerator->addUseClassForType($type);
+
+        $this->decrementIndent();
+        $this->addCodeLine('} catch(' . $type->getCodeType() . ' $' . $variableName . ') {');
+        $this->incrementIndent();
+    }
+
+    public function addCatchEnd()
+    {
+        $this->decrementIndent();
+        $this->addCodeLine('}');
     }
 
     /**
