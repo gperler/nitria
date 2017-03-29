@@ -138,6 +138,7 @@ class CodeTest extends End2EndTest
         $classGenerator = new ClassGenerator('Tests\TryCatchTest', true);
 
         $method = $classGenerator->addPublicMethod("sayTry");
+        $method->addThrows('\Exception');
         $method->addParameter("string", "value");
         $method->setReturnType("bool", false);
 

@@ -34,6 +34,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
      */
     protected function deleteGeneratedCode(string $dir)
     {
+
         if (!is_dir($dir)) {
             return;
         }

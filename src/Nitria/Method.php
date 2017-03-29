@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace Nitria;
 
-use Civis\Common\StringUtil;
-
 class Method
 {
 
@@ -70,6 +68,11 @@ class Method
     protected $docBlockComment;
 
     /**
+     * @var string[]
+     */
+    protected $throwsList;
+
+    /**
      * Method constructor.
      *
      * @param ClassGenerator $classGenerator
@@ -87,6 +90,7 @@ class Method
         $this->methodParameterList = [];
         $this->currentIndent = 2;
         $this->constructor = $name === '__construct';
+        $this->throwsList = [];
 
         $this->indent = $classGenerator->getIndent();
         $this->methodSignature = new CodeWriter($this->indent);
@@ -326,7 +330,6 @@ class Method
     }
 
     /**
-     *
      */
     protected function generateDocBlock()
     {
@@ -338,8 +341,12 @@ class Method
         if (!$this->constructor) {
             $phpDocBlock[] = $this->methodReturnType->getDocBlockReturnType();
         }
+        foreach ($this->throwsList as $throws) {
+            $phpDocBlock[] = "@throws " . $throws;
+        }
         $this->methodSignature->addEmptyLine();
         $this->methodSignature->addDocBlock($phpDocBlock, 1);
+
     }
 
     /**
@@ -382,6 +389,14 @@ class Method
     public function addInlineComment(string $inlineComment)
     {
         $this->addCodeLine("// " . $inlineComment);
+    }
+
+    /**
+     * @param string $exceptionName
+     */
+    public function addThrows(string $exceptionName)
+    {
+        $this->throwsList[] = $exceptionName;
     }
 
 }
