@@ -52,7 +52,7 @@ class MethodReturnType
             return '';
         }
         if ($this->nullAble) {
-            return '';
+            return ' : ?' . $this->type->getCodeType();
         }
 
         return ' : ' . $this->type->getCodeType();

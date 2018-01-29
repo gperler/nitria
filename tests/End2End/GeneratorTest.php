@@ -376,7 +376,8 @@ class GeneratorTest extends End2EndTest
         $method->setReturnType(self::OTHER_CLASS_1 . '[]', false);
         $method->addInlineComment("this is really important");
         $method->addCodeLine('return [];');
-
+        $method->addException('\Exception');
+        $method->addException('Codeception\Exception\TestRuntimeException');
         $classGenerator->writeToPSR0(self::BASE_DIR);
 
         $reflection = $this->getReflectClass($classGenerator);

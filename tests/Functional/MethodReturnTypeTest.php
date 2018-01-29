@@ -32,7 +32,7 @@ class MethodReturnTypeTest extends \PHPUnit_Framework_TestCase
         $type = new Type("int");
         $methodReturnType = new MethodReturnType($type, true);
         $this->assertSame("@return int|null", $methodReturnType->getDocBlockReturnType());
-        $this->assertSame("", $methodReturnType->getSignatureReturnType());
+        $this->assertSame(" : ?int", $methodReturnType->getSignatureReturnType());
         $this->assertTrue($methodReturnType->hasReturnType());
     }
 

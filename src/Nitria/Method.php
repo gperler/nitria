@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Nitria;
 
@@ -68,9 +68,9 @@ class Method
     protected $docBlockComment;
 
     /**
-     * @var string[]
+     * @var Type[]
      */
-    protected $throwsList;
+    protected $exceptionList;
 
     /**
      * Method constructor.
@@ -90,7 +90,7 @@ class Method
         $this->methodParameterList = [];
         $this->currentIndent = 2;
         $this->constructor = $name === '__construct';
-        $this->throwsList = [];
+        $this->exceptionList = [];
 
         $this->indent = $classGenerator->getIndent();
         $this->methodSignature = new CodeWriter($this->indent);
@@ -123,9 +123,19 @@ class Method
     }
 
     /**
+     * @param string $typeName
+     */
+    public function addException(string $typeName)
+    {
+        $type = new Type($typeName, $this->classGenerator->getUseStatementList());
+        $this->classGenerator->addUseClassForType($type);
+        $this->exceptionList[] = $type;
+    }
+
+    /**
      * @return bool
      */
-    public function hasReturnType() : bool
+    public function hasReturnType(): bool
     {
         return $this->methodReturnType->hasReturnType();
     }
@@ -311,7 +321,7 @@ class Method
     /**
      * @return string[]
      */
-    public function getCodeLineList() : array
+    public function getCodeLineList(): array
     {
         $this->generateMethod();
         $signatureLineList = $this->methodSignature->getCodeLineList();
@@ -341,8 +351,8 @@ class Method
         if (!$this->constructor) {
             $phpDocBlock[] = $this->methodReturnType->getDocBlockReturnType();
         }
-        foreach ($this->throwsList as $throws) {
-            $phpDocBlock[] = "@throws " . $throws;
+        foreach ($this->exceptionList as $exception) {
+            $phpDocBlock[] = "@throws " . $exception->getDocBlockType();
         }
         $this->methodSignature->addEmptyLine();
         $this->methodSignature->addDocBlock($phpDocBlock, 1);
@@ -366,7 +376,7 @@ class Method
     /**
      *
      */
-    protected function createSignature() : string
+    protected function createSignature(): string
     {
         $parameterList = [];
         foreach ($this->methodParameterList as $parameter) {
@@ -389,14 +399,6 @@ class Method
     public function addInlineComment(string $inlineComment)
     {
         $this->addCodeLine("// " . $inlineComment);
-    }
-
-    /**
-     * @param string $exceptionName
-     */
-    public function addThrows(string $exceptionName)
-    {
-        $this->throwsList[] = $exceptionName;
     }
 
 }
