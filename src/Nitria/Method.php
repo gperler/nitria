@@ -98,6 +98,14 @@ class Method
     }
 
     /**
+     * @param $className
+     */
+    public function addUsedClassName($className)
+    {
+        $this->classGenerator->addUsedClassName($className);
+    }
+
+    /**
      * @param string|null $typeName
      * @param string $name
      * @param string|null $defaultValue

@@ -219,7 +219,7 @@ class GeneratorTest extends End2EndTest
         $this->assertTrue(array_key_exists("iAmProtected", $staticProperties));
         $this->assertTrue(array_key_exists("iAmPublic", $staticProperties));
 
-        $this->assertNotNull(23.122, $reflectClass->getStaticPropertyValue("iAmPublic"));
+        $this->assertSame(23.122, $reflectClass->getStaticPropertyValue("iAmPublic"));
     }
 
     /**
