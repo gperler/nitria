@@ -98,9 +98,9 @@ class Method
     }
 
     /**
-     * @param $className
+     * @param string $className
      */
-    public function addUsedClassName($className)
+    public function addUsedClassName(string $className)
     {
         $this->classGenerator->addUsedClassName($className);
     }
