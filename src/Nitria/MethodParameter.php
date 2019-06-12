@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Nitria;
 
@@ -13,37 +13,43 @@ class MethodParameter
     /**
      * @var Type
      */
-    protected $type;
+    private $type;
 
     /**
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * @var bool
      */
-    protected $defaultValue;
+    private $defaultValue;
 
     /**
      * @var string
      */
-    protected $docComment;
+    private $docComment;
+
+    /**
+     * @var bool
+     */
+    private $allowsNull;
 
     /**
      * MethodParameter constructor.
-     *
      * @param Type $type
      * @param string $name
      * @param string|null $defaultValue
-     * @param string $docComment
+     * @param null $docComment
+     * @param bool $allowsNull
      */
-    public function __construct(Type $type, string $name, string $defaultValue = null, $docComment = null)
+    public function __construct(Type $type, string $name, string $defaultValue = null, $docComment = null, $allowsNull = false)
     {
         $this->type = $type;
         $this->name = $name;
         $this->defaultValue = $defaultValue;
         $this->docComment = $docComment;
+        $this->allowsNull = $allowsNull;
     }
 
     /**
@@ -51,7 +57,7 @@ class MethodParameter
      */
     public function getPHPDocLine()
     {
-        $docBlockType = ($this->defaultValue === 'null') ? $this->type->getDocBlockType() . '|null' : $this->type->getDocBlockType();
+        $docBlockType = ($this->getAllowsNull()) ? $this->type->getDocBlockType() . '|null' : $this->type->getDocBlockType();
 
         $docBlockLine = '@param ' . $docBlockType . ' $' . $this->name;
         if ($this->docComment !== null) {
@@ -63,13 +69,26 @@ class MethodParameter
     /**
      * @return string
      */
-    public function getSignaturePart()
+    public function getSignaturePart(): string
     {
         $codeType = $this->type->getCodeType();
         if ($codeType === null) {
             return '$' . $this->name;
         }
+        if ($this->getAllowsNull() && ($this->defaultValue === null || $this->defaultValue === 'null') ) {
+            return '?' . $codeType . ' $' . $this->name;
+        }
+
         $optional = ($this->defaultValue !== null) ? ' = ' . $this->defaultValue : '';
         return $codeType . ' $' . $this->name . $optional;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function getAllowsNull(): bool
+    {
+        return $this->allowsNull || $this->defaultValue === 'null';
     }
 }
