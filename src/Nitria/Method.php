@@ -109,13 +109,14 @@ class Method
      * @param string|null $typeName
      * @param string $name
      * @param string|null $defaultValue
-     * @param string $docComment
+     * @param string|null $docComment
+     * @param bool $allowsNull
      */
-    public function addParameter(string $typeName = null, string $name, string $defaultValue = null, string $docComment = null)
+    public function addParameter(string $typeName = null, string $name, string $defaultValue = null, string $docComment = null, $allowsNull = false)
     {
         $type = new Type($typeName, $this->classGenerator->getUseStatementList());
         $this->classGenerator->addUseClassForType($type);
-        $this->methodParameterList[] = new MethodParameter($type, $name, $defaultValue, $docComment);
+        $this->methodParameterList[] = new MethodParameter($type, $name, $defaultValue, $docComment, $allowsNull);
     }
 
     /**
