@@ -57,7 +57,7 @@ class MethodParameter
      */
     public function getPHPDocLine()
     {
-        $docBlockType = ($this->getAllowsNull()) ? $this->type->getDocBlockType() . '|null' : $this->type->getDocBlockType();
+        $docBlockType = ($this->getAllowsNull() || $this->defaultValue === 'null') ? $this->type->getDocBlockType() . '|null' : $this->type->getDocBlockType();
 
         $docBlockLine = '@param ' . $docBlockType . ' $' . $this->name;
         if ($this->docComment !== null) {
@@ -75,7 +75,7 @@ class MethodParameter
         if ($codeType === null) {
             return '$' . $this->name;
         }
-        if ($this->getAllowsNull() && ($this->defaultValue === null || $this->defaultValue === 'null') ) {
+        if ($this->getAllowsNull() && ($this->defaultValue === null) ) {
             return '?' . $codeType . ' $' . $this->name;
         }
 
@@ -89,6 +89,6 @@ class MethodParameter
      */
     public function getAllowsNull(): bool
     {
-        return $this->allowsNull || $this->defaultValue === 'null';
+        return $this->allowsNull;
     }
 }
