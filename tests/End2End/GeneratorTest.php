@@ -16,7 +16,7 @@ class GeneratorTest extends End2EndTest
     const INTERFACE_NAME_2 = 'NitriaTest\End2End\Asset\SomeOtherInterface';
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testClassGeneration()
     {
@@ -29,6 +29,25 @@ class GeneratorTest extends End2EndTest
         $this->assertSame($className, $reflectClass->getName());
     }
 
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function testClassGenerationPSR4()
+    {
+        $className = 'PSR4\Test\Tests\ClassGenerationTest';
+
+        $classGenerator = new ClassGenerator($className, true);
+        $classGenerator->writeToPSR4(self::BASE_DIR, '\PSR4\Test');
+
+        $reflectClass = $this->getReflectClassPSR4($classGenerator, '\PSR4\Test');
+        $this->assertSame($className, $reflectClass->getName());
+    }
+
+
+    /**
+     *
+     */
     public function testSameNamespaceImport()
     {
         $className = 'SameNamespace\ClassGenerationTest';
@@ -40,6 +59,9 @@ class GeneratorTest extends End2EndTest
         $classGenerator->writeToPSR0(self::BASE_DIR);
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testAsImport()
     {
         $className = 'Tests\UseAsClass';
@@ -74,7 +96,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testExtends()
     {
@@ -88,7 +110,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testImplements()
     {
@@ -103,7 +125,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testConstant()
     {
@@ -124,7 +146,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testMember()
     {
@@ -152,7 +174,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testMemberWithValue()
     {
@@ -178,7 +200,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testStaticMember()
     {
@@ -202,7 +224,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testStaticMemberWithValue()
     {
@@ -223,7 +245,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testMethod()
     {
@@ -253,7 +275,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testStaticMethod()
     {
@@ -281,7 +303,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testMethodWithSignature()
     {
@@ -362,7 +384,7 @@ class GeneratorTest extends End2EndTest
     }
 
     /**
-     *
+     * @throws \ReflectionException
      */
     public function testDocComment()
     {

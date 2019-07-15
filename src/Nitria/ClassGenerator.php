@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Nitria;
 
@@ -8,6 +8,10 @@ use Civis\Common\File;
 
 class ClassGenerator
 {
+
+    const BACKSLASH = "\\";
+
+    const PHP_SUFFIX = ".php";
 
     /**
      * @var string
@@ -90,6 +94,21 @@ class ClassGenerator
 
         $basePath = rtrim($basePath, DIRECTORY_SEPARATOR);
         $targetFileName = $basePath . DIRECTORY_SEPARATOR . $this->getPSR0File();
+
+        $file = new File($targetFileName);
+        $file->putContents($this->codeWriter->getCode());
+    }
+
+    /**
+     * @param string $basePath
+     * @param string $psr4Prefix
+     */
+    public function writeToPSR4(string $basePath, string $psr4Prefix)
+    {
+        $this->generate();
+
+        $basePath = rtrim($basePath, DIRECTORY_SEPARATOR);
+        $targetFileName = $basePath . DIRECTORY_SEPARATOR . $this->getPSR4File($psr4Prefix);
 
         $file = new File($targetFileName);
         $file->putContents($this->codeWriter->getCode());
@@ -325,7 +344,7 @@ class ClassGenerator
      *
      * @return Method
      */
-    public function addPublicStaticMethod(string $name) : Method
+    public function addPublicStaticMethod(string $name): Method
     {
         return $this->addMethod($name, "public", true);
     }
@@ -335,7 +354,7 @@ class ClassGenerator
      *
      * @return Method
      */
-    public function addProtectedStaticMethod(string $name) : Method
+    public function addProtectedStaticMethod(string $name): Method
     {
         return $this->addMethod($name, "protected", true);
     }
@@ -345,7 +364,7 @@ class ClassGenerator
      *
      * @return Method
      */
-    public function addPrivateStaticMethod(string $name) : Method
+    public function addPrivateStaticMethod(string $name): Method
     {
         return $this->addMethod($name, "private", true);
     }
@@ -355,7 +374,7 @@ class ClassGenerator
      *
      * @return Method
      */
-    public function addPublicMethod(string $name) : Method
+    public function addPublicMethod(string $name): Method
     {
         return $this->addMethod($name);
     }
@@ -365,7 +384,7 @@ class ClassGenerator
      *
      * @return Method
      */
-    public function addProtectedMethod(string $name) : Method
+    public function addProtectedMethod(string $name): Method
     {
         return $this->addMethod($name, "protected");
     }
@@ -375,7 +394,7 @@ class ClassGenerator
      *
      * @return Method
      */
-    public function addPrivateMethod(string $name) : Method
+    public function addPrivateMethod(string $name): Method
     {
         return $this->addMethod($name, "private");
     }
@@ -395,7 +414,7 @@ class ClassGenerator
      *
      * @return Method
      */
-    public function addMethod(string $name, string $modifier = "public", bool $static = false) : Method
+    public function addMethod(string $name, string $modifier = "public", bool $static = false): Method
     {
         $method = new Method($this, $name, $modifier, $static);
         return $this->addMethodObject($method);
@@ -406,7 +425,7 @@ class ClassGenerator
      *
      * @return Method
      */
-    public function addMethodObject(Method $method) : Method
+    public function addMethodObject(Method $method): Method
     {
         $this->methodList[] = $method;
         return $method;
@@ -415,7 +434,7 @@ class ClassGenerator
     /**
      * @return string
      */
-    public function getClassName() : string
+    public function getClassName(): string
     {
         return $this->className->getClassName();
     }
@@ -423,7 +442,7 @@ class ClassGenerator
     /**
      * @return string
      */
-    public function getClassShortName() : string
+    public function getClassShortName(): string
     {
         return $this->className->getClassShortName();
     }
@@ -431,20 +450,44 @@ class ClassGenerator
     /**
      * @return string
      */
-    public function getPSR0Path() : string
+    public function getPSR0Path(): string
     {
         if ($this->className->getNamespaceName() === null) {
             return "";
         }
-        return str_replace("\\", DIRECTORY_SEPARATOR, $this->className->getNamespaceName());
+        return str_replace(self::BACKSLASH, DIRECTORY_SEPARATOR, $this->className->getNamespaceName()) . DIRECTORY_SEPARATOR;
     }
 
     /**
      * @return string
      */
-    public function getPSR0File() : string
+    public function getPSR0File(): string
     {
-        return $this->getPSR0Path() . DIRECTORY_SEPARATOR . trim($this->getClassShortName(), "\\") . ".php";
+        return $this->getPSR0Path() . $this->getClassShortName() . self::PHP_SUFFIX;
+    }
+
+    /**
+     * @param string $psr4Prefix
+     * @return string
+     */
+    public function getPSR4Path(string $psr4Prefix): string
+    {
+        if ($this->className->getNamespaceName() === null) {
+            return "";
+        }
+        $psr4Prefix = trim($psr4Prefix, self::BACKSLASH);
+        $relevantNamespace = str_replace($psr4Prefix, "", $this->className->getNamespaceName());
+
+        return str_replace(self::BACKSLASH, DIRECTORY_SEPARATOR, $relevantNamespace) . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * @param string $psr4Prefix
+     * @return string
+     */
+    public function getPSR4File(string $psr4Prefix): string
+    {
+        return $this->getPSR4Path($psr4Prefix) . $this->getClassShortName() . self::PHP_SUFFIX;
     }
 
     /**
