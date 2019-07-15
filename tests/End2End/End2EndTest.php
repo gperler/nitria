@@ -52,8 +52,8 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param ClassGenerator $classGenerator
-     *
-     * @return mixed
+     * @return object
+     * @throws \ReflectionException
      */
     protected function getReflectInstance(ClassGenerator $classGenerator)
     {
@@ -70,12 +70,31 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param ClassGenerator $classGenerator
-     *
      * @return \ReflectionClass
+     * @throws \ReflectionException
      */
-    protected function getReflectClass(ClassGenerator $classGenerator)
+    protected function getReflectClass(ClassGenerator $classGenerator) : \ReflectionClass
     {
         require_once self::BASE_DIR . $classGenerator->getPSR0File();
+
+        $reflectClass = new \ReflectionClass($classGenerator->getClassName());
+        $this->assertNotNull($reflectClass);
+
+        $object = $reflectClass->newInstance();
+        $this->assertNotNull($object);
+
+        return $reflectClass;
+    }
+
+    /**
+     * @param ClassGenerator $classGenerator
+     * @param string $psr4Prefix
+     * @return \ReflectionClass
+     * @throws \ReflectionException
+     */
+    protected function getReflectClassPSR4(ClassGenerator $classGenerator, string $psr4Prefix) : \ReflectionClass
+    {
+        require_once self::BASE_DIR . $classGenerator->getPSR4File($psr4Prefix);
 
         $reflectClass = new \ReflectionClass($classGenerator->getClassName());
         $this->assertNotNull($reflectClass);
