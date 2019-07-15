@@ -26,7 +26,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         parent::tearDown();
-        //$this->deleteGeneratedCode(self::BASE_DIR);
+        $this->deleteGeneratedCode(self::BASE_DIR);
     }
 
     /**

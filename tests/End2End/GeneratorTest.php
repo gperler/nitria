@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NitriaTest\End2End;
 
-use Codeception\Util\Debug;
 use Nitria\ClassGenerator;
 
 class GeneratorTest extends End2EndTest
@@ -36,12 +35,15 @@ class GeneratorTest extends End2EndTest
      */
     public function testClassGenerationPSR4()
     {
-        $className = 'Synatos\PSRTest\Name\ClassGenerationTest';
+        $className = 'Synatos\PSRTest\Name\ClassGenerationTest2';
 
         $classGenerator = new ClassGenerator($className, true);
-        $classGenerator->writeToPSR4(self::BASE_DIR, '\Synatos\PSRTest');
+        $classGenerator->writeToPSR4(self::BASE_DIR, '\\Synatos\\');
 
-        $reflectClass = $this->getReflectClassPSR4($classGenerator, '\Synatos\PSRTest');
+        $reflectClass = $this->getReflectClassPSR4($classGenerator, '\\Synatos\\');
+
+        $this->assertTrue(file_exists(__DIR__ . '/gen/PSRTest/Name/ClassGenerationTest2.php'));
+
         $this->assertSame($className, $reflectClass->getName());
     }
 
