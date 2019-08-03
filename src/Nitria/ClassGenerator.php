@@ -143,7 +143,9 @@ class ClassGenerator
 
         $this->codeWriter->addUseStatementList($this->usedClassNameList);
 
-        $this->codeWriter->addDocBlock($this->docBlockComment, 0);
+        if (!empty($this->docBlockComment)) {
+            $this->codeWriter->addDocBlock($this->docBlockComment, 0);
+        }
 
         $this->codeWriter->addClassStart($this->className->getClassShortName(), $this->extendsClassShortName, $this->implementClassNameList);
 
