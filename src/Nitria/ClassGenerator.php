@@ -64,6 +64,11 @@ class ClassGenerator
     protected $codeWriter;
 
     /**
+     * @var string[]
+     */
+    protected $docBlockComment;
+
+    /**
      * ClassGenerator constructor.
      *
      * @param string $className
@@ -79,7 +84,7 @@ class ClassGenerator
         $this->constantList = [];
         $this->propertyList = [];
         $this->methodList = [];
-
+        $this->docBlockComment = [];
         $this->strictTypes = $strictTypes;
         $this->codeWriter = new CodeWriter($indent);
         $this->indent = $indent;
@@ -129,6 +134,7 @@ class ClassGenerator
      */
     protected function generate()
     {
+
         $this->codeWriter->addPHPDeclaration();
 
         $this->codeWriter->addStrictStatement($this->strictTypes);
@@ -136,6 +142,8 @@ class ClassGenerator
         $this->codeWriter->addNamespace($this->className->getNamespaceName());
 
         $this->codeWriter->addUseStatementList($this->usedClassNameList);
+
+        $this->codeWriter->addDocBlock($this->docBlockComment, 0);
 
         $this->codeWriter->addClassStart($this->className->getClassShortName(), $this->extendsClassShortName, $this->implementClassNameList);
 
@@ -506,4 +514,11 @@ class ClassGenerator
         return $this->usedClassNameList;
     }
 
+    /**
+     * @param string $docBlockComment
+     */
+    public function addDocBlockComment(string $docBlockComment)
+    {
+        $this->docBlockComment[] = $docBlockComment;
+    }
 }

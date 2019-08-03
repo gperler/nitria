@@ -16,6 +16,7 @@ class CustomMethodTest extends End2EndTest
 
 
         $classGenerator = new ClassGenerator($className, true);
+        $classGenerator->addDocBlockComment("@Author: the maschine");
 
         $method = new CustomMethod($classGenerator, "myName", "public", false);
         $method->addMyCustomMethod();
