@@ -64,6 +64,11 @@ class ClassGenerator
     protected $codeWriter;
 
     /**
+     * @var string[]
+     */
+    protected $docBlockComment;
+
+    /**
      * ClassGenerator constructor.
      *
      * @param string $className
@@ -79,7 +84,7 @@ class ClassGenerator
         $this->constantList = [];
         $this->propertyList = [];
         $this->methodList = [];
-
+        $this->docBlockComment = [];
         $this->strictTypes = $strictTypes;
         $this->codeWriter = new CodeWriter($indent);
         $this->indent = $indent;
@@ -129,6 +134,7 @@ class ClassGenerator
      */
     protected function generate()
     {
+
         $this->codeWriter->addPHPDeclaration();
 
         $this->codeWriter->addStrictStatement($this->strictTypes);
@@ -136,6 +142,10 @@ class ClassGenerator
         $this->codeWriter->addNamespace($this->className->getNamespaceName());
 
         $this->codeWriter->addUseStatementList($this->usedClassNameList);
+
+        if (!empty($this->docBlockComment)) {
+            $this->codeWriter->addDocBlock($this->docBlockComment, 0);
+        }
 
         $this->codeWriter->addClassStart($this->className->getClassShortName(), $this->extendsClassShortName, $this->implementClassNameList);
 
@@ -263,7 +273,7 @@ class ClassGenerator
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addPublicStaticProperty(string $name, string $type, string $value = null, string $docComment = null)
+    public function addPublicStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null)
     {
         $this->addProperty($name, $type, "public", true, $value, $docComment);
     }
@@ -274,7 +284,7 @@ class ClassGenerator
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addProtectedStaticProperty(string $name, string $type, string $value = null, string $docComment = null)
+    public function addProtectedStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null)
     {
         $this->addProperty($name, $type, "protected", true, $value, $docComment);
     }
@@ -285,7 +295,7 @@ class ClassGenerator
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addPrivateStaticProperty(string $name, string $type, string $value = null, string $docComment = null)
+    public function addPrivateStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null)
     {
         $this->addProperty($name, $type, "private", true, $value, $docComment);
     }
@@ -296,7 +306,7 @@ class ClassGenerator
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addPublicProperty(string $name, string $type, string $value = null, string $docComment = null)
+    public function addPublicProperty(string $name, ?string $type, string $value = null, string $docComment = null)
     {
         $this->addProperty($name, $type, "public", false, $value, $docComment);
     }
@@ -307,7 +317,7 @@ class ClassGenerator
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addProtectedProperty(string $name, string $type, string $value = null, string $docComment = null)
+    public function addProtectedProperty(string $name, ?string $type, string $value = null, string $docComment = null)
     {
         $this->addProperty($name, $type, "protected", false, $value, $docComment);
     }
@@ -318,7 +328,7 @@ class ClassGenerator
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addPrivateProperty(string $name, string $type, string $value = null, string $docComment = null)
+    public function addPrivateProperty(string $name, ?string $type, string $value = null, string $docComment = null)
     {
         $this->addProperty($name, $type, "private", false, $value, $docComment);
     }
@@ -331,7 +341,7 @@ class ClassGenerator
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addProperty(string $name, string $typeName, string $modifier = "private", bool $static = false, string $value = null, string $docComment = null)
+    public function addProperty(string $name, ?string $typeName, string $modifier = "private", bool $static = false, string $value = null, string $docComment = null)
     {
         $type = new Type($typeName, $this->usedClassNameList);
         $this->addUseClassForType($type);
@@ -506,4 +516,11 @@ class ClassGenerator
         return $this->usedClassNameList;
     }
 
+    /**
+     * @param string $docBlockComment
+     */
+    public function addDocBlockComment(string $docBlockComment)
+    {
+        $this->docBlockComment[] = $docBlockComment;
+    }
 }

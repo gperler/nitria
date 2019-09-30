@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NitriaTest\End2End;
 
@@ -11,6 +11,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
 
     const BASE_DIR = __DIR__ . '/gen/';
 
+
     /**
      *
      */
@@ -20,6 +21,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
         $this->deleteGeneratedCode(self::BASE_DIR);
     }
 
+
     /**
      *
      */
@@ -28,6 +30,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
         parent::tearDown();
         $this->deleteGeneratedCode(self::BASE_DIR);
     }
+
 
     /**
      *
@@ -50,8 +53,10 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
         rmdir($dir);
     }
 
+
     /**
      * @param ClassGenerator $classGenerator
+     *
      * @return object
      * @throws \ReflectionException
      */
@@ -68,12 +73,14 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
         return $object;
     }
 
+
     /**
      * @param ClassGenerator $classGenerator
+     *
      * @return \ReflectionClass
      * @throws \ReflectionException
      */
-    protected function getReflectClass(ClassGenerator $classGenerator) : \ReflectionClass
+    protected function getReflectClass(ClassGenerator $classGenerator): \ReflectionClass
     {
         require_once self::BASE_DIR . $classGenerator->getPSR0File();
 
@@ -86,13 +93,15 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
         return $reflectClass;
     }
 
+
     /**
      * @param ClassGenerator $classGenerator
      * @param string $psr4Prefix
+     *
      * @return \ReflectionClass
      * @throws \ReflectionException
      */
-    protected function getReflectClassPSR4(ClassGenerator $classGenerator, string $psr4Prefix) : \ReflectionClass
+    protected function getReflectClassPSR4(ClassGenerator $classGenerator, string $psr4Prefix): \ReflectionClass
     {
         require_once self::BASE_DIR . $classGenerator->getPSR4File($psr4Prefix);
 

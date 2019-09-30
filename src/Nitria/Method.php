@@ -63,7 +63,7 @@ class Method
     protected $currentIndent;
 
     /**
-     * @var string
+     * @var string[]
      */
     protected $docBlockComment;
 
@@ -71,6 +71,7 @@ class Method
      * @var Type[]
      */
     protected $exceptionList;
+
 
     /**
      * Method constructor.
@@ -91,11 +92,13 @@ class Method
         $this->currentIndent = 2;
         $this->constructor = $name === '__construct';
         $this->exceptionList = [];
+        $this->docBlockComment = [];
 
         $this->indent = $classGenerator->getIndent();
         $this->methodSignature = new CodeWriter($this->indent);
         $this->methodBody = new CodeWriter($this->indent);
     }
+
 
     /**
      * @param string $className
@@ -105,6 +108,7 @@ class Method
         $this->classGenerator->addUsedClassName($className);
     }
 
+
     /**
      * @param string|null $typeName
      * @param string $name
@@ -112,12 +116,13 @@ class Method
      * @param string|null $docComment
      * @param bool $allowsNull
      */
-    public function addParameter(string $typeName = null, string $name, string $defaultValue = null, string $docComment = null, $allowsNull = false)
+    public function addParameter(?string $typeName, string $name, string $defaultValue = null, string $docComment = null, $allowsNull = false)
     {
         $type = new Type($typeName, $this->classGenerator->getUseStatementList());
         $this->classGenerator->addUseClassForType($type);
         $this->methodParameterList[] = new MethodParameter($type, $name, $defaultValue, $docComment, $allowsNull);
     }
+
 
     /**
      * @param string|null $typeName
@@ -131,6 +136,7 @@ class Method
         $this->methodReturnType = new MethodReturnType($type, $nullAble);
     }
 
+
     /**
      * @param string $typeName
      */
@@ -141,6 +147,7 @@ class Method
         $this->exceptionList[] = $type;
     }
 
+
     /**
      * @return bool
      */
@@ -148,6 +155,7 @@ class Method
     {
         return $this->methodReturnType->hasReturnType();
     }
+
 
     /**
      * @return bool
@@ -157,6 +165,7 @@ class Method
         return $this->static;
     }
 
+
     /**
      * @return bool
      */
@@ -164,6 +173,7 @@ class Method
     {
         return $this->constructor;
     }
+
 
     /**
      * @param $content
@@ -174,26 +184,31 @@ class Method
         $this->methodBody->addCodeLine($content, $this->currentIndent, $lineBreaks);
     }
 
+
     public function addNewLine()
     {
         $this->methodBody->addCodeLine('', 0, 1);
     }
+
 
     public function incrementIndent()
     {
         $this->currentIndent++;
     }
 
+
     public function decrementIndent()
     {
         $this->currentIndent--;
     }
+
 
     public function addTry()
     {
         $this->addCodeLine('try {');
         $this->incrementIndent();
     }
+
 
     public function addCatchStart(string $className, string $variableName)
     {
@@ -205,11 +220,13 @@ class Method
         $this->incrementIndent();
     }
 
+
     public function addCatchEnd()
     {
         $this->decrementIndent();
         $this->addCodeLine('}');
     }
+
 
     /**
      * @param $condition
@@ -219,6 +236,7 @@ class Method
         $this->addCodeLine("if ($condition) {");
         $this->currentIndent++;
     }
+
 
     /**
      *
@@ -230,6 +248,7 @@ class Method
         $this->currentIndent++;
     }
 
+
     /**
      * @param string $condition
      */
@@ -240,6 +259,7 @@ class Method
         $this->currentIndent++;
     }
 
+
     /**
      *
      */
@@ -248,6 +268,7 @@ class Method
         $this->currentIndent--;
         $this->addCodeLine("}");
     }
+
 
     /**
      * @param string $condition
@@ -258,6 +279,7 @@ class Method
         $this->currentIndent++;
     }
 
+
     /**
      *
      */
@@ -266,6 +288,7 @@ class Method
         $this->currentIndent--;
         $this->addCodeLine("}");
     }
+
 
     /**
      * @param string $condition
@@ -276,6 +299,7 @@ class Method
         $this->currentIndent++;
     }
 
+
     /**
      *
      */
@@ -284,6 +308,7 @@ class Method
         $this->currentIndent--;
         $this->addCodeLine("}");
     }
+
 
     /**
      * @param string $variableName
@@ -294,6 +319,7 @@ class Method
         $this->currentIndent++;
     }
 
+
     /**
      * @param string $value
      */
@@ -303,16 +329,19 @@ class Method
         $this->currentIndent++;
     }
 
+
     public function addSwitchBreak()
     {
         $this->addCodeLine("break;");
         $this->currentIndent--;
     }
 
+
     public function addSwitchReturnBreak()
     {
         $this->currentIndent--;
     }
+
 
     public function addSwitchDefault()
     {
@@ -320,12 +349,13 @@ class Method
         $this->currentIndent++;
     }
 
+
     public function addSwitchEnd()
     {
         $this->currentIndent--;
         $this->addCodeLine("}");
-
     }
+
 
     /**
      * @return string[]
@@ -338,6 +368,7 @@ class Method
         return array_merge($signatureLineList, $bodyCodeLineList);
     }
 
+
     /**
      *
      */
@@ -348,11 +379,12 @@ class Method
         $this->methodBody->addCodeLine("}", 1);
     }
 
+
     /**
      */
     protected function generateDocBlock()
     {
-        $phpDocBlock = $this->docBlockComment !== null ? [$this->docBlockComment] : [];
+        $phpDocBlock = $this->docBlockComment;
         foreach ($this->methodParameterList as $parameter) {
             $phpDocBlock[] = $parameter->getPHPDocLine();
         }
@@ -365,8 +397,8 @@ class Method
         }
         $this->methodSignature->addEmptyLine();
         $this->methodSignature->addDocBlock($phpDocBlock, 1);
-
     }
+
 
     /**
      *
@@ -382,6 +414,7 @@ class Method
         $this->methodSignature->addCodeLine("{", 1);
     }
 
+
     /**
      *
      */
@@ -394,13 +427,24 @@ class Method
         return implode(", ", $parameterList);
     }
 
+
     /**
      * @param string $docBlockComment
      */
     public function setDocBlockComment(string $docBlockComment)
     {
-        $this->docBlockComment = $docBlockComment;
+        $this->docBlockComment = [$docBlockComment];
     }
+
+
+    /**
+     * @param string $docBlockComment
+     */
+    public function addDocBlockComment(string $docBlockComment)
+    {
+        $this->docBlockComment[] = $docBlockComment;
+    }
+
 
     /**
      * @param string $inlineComment

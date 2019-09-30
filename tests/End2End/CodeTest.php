@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NitriaTest\End2End;
 
@@ -10,9 +10,11 @@ class CodeTest extends End2EndTest
 {
 
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testIfStatement()
     {
-
         $classGenerator = new ClassGenerator('Tests\IfStatementTest', true);
 
         $method = $classGenerator->addPublicMethod("sayIf");
@@ -45,6 +47,10 @@ class CodeTest extends End2EndTest
         $this->assertTrue(strpos($reflectionMethod->getDocComment(), 'This explains Why') !== false);
     }
 
+
+    /**
+     * @throws \ReflectionException
+     */
     public function testWhileStatement()
     {
         $classGenerator = new ClassGenerator('Tests\WhileStatementTest', true);
@@ -67,9 +73,12 @@ class CodeTest extends End2EndTest
         $this->assertSame(10, strlen($whileObject->sayWhile(0)));
         $this->assertSame(4, strlen($whileObject->sayWhile(6)));
         $this->assertSame(0, strlen($whileObject->sayWhile(15)));
-
     }
 
+
+    /**
+     * @throws \ReflectionException
+     */
     public function testForeachStatement()
     {
         $classGenerator = new ClassGenerator('Tests\ForeachStatementTest', true);
@@ -95,9 +104,12 @@ class CodeTest extends End2EndTest
         ]));
         $this->assertSame("abc", $foreachObject->sayForeach(['abc']));
         $this->assertSame("", $foreachObject->sayForeach([]));
-
     }
 
+
+    /**
+     * @throws \ReflectionException
+     */
     public function testSwitchStatement()
     {
         $classGenerator = new ClassGenerator('Tests\SwitchStatementTest', true);
@@ -130,11 +142,14 @@ class CodeTest extends End2EndTest
         $this->assertSame("b", $switchObject->saySwitch('b'));
         $this->assertSame("c", $switchObject->saySwitch('c'));
         $this->assertSame("c", $switchObject->saySwitch('fff'));
-
     }
 
 
-    public function testTryCatchStatement() {
+    /**
+     * @throws \ReflectionException
+     */
+    public function testTryCatchStatement()
+    {
         $classGenerator = new ClassGenerator('Tests\TryCatchTest', true);
 
         $method = $classGenerator->addPublicMethod("sayTry");
@@ -158,7 +173,6 @@ class CodeTest extends End2EndTest
         $tryCatch = $this->getReflectInstance($classGenerator);
 
         $this->assertTrue($tryCatch->sayTry(""));
-
     }
 
 }

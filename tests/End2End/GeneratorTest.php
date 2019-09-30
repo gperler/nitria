@@ -15,6 +15,7 @@ class GeneratorTest extends End2EndTest
 
     const INTERFACE_NAME_2 = 'NitriaTest\End2End\Asset\SomeOtherInterface';
 
+
     /**
      * @throws \ReflectionException
      */
@@ -62,6 +63,7 @@ class GeneratorTest extends End2EndTest
         $classGenerator->writeToPSR0(self::BASE_DIR);
     }
 
+
     /**
      * @throws \ReflectionException
      */
@@ -98,12 +100,12 @@ class GeneratorTest extends End2EndTest
         $this->assertTrue(strpos($method->getDocComment(), '@param MyConstant $paramName') !== false);
     }
 
+
     /**
      * @throws \ReflectionException
      */
     public function testExtends()
     {
-
         $classGenerator = new ClassGenerator("Tests\\ExtendsTest", true);
         $classGenerator->setExtends(self::OTHER_CLASS_1);
         $classGenerator->writeToPSR0(self::BASE_DIR);
@@ -111,6 +113,7 @@ class GeneratorTest extends End2EndTest
         $reflectClass = $this->getReflectClass($classGenerator);
         $this->assertTrue($reflectClass->isSubclassOf(self::OTHER_CLASS_1));
     }
+
 
     /**
      * @throws \ReflectionException
@@ -126,6 +129,7 @@ class GeneratorTest extends End2EndTest
         $this->assertTrue($reflectClass->implementsInterface(self::INTERFACE_NAME_1));
         $this->assertTrue($reflectClass->implementsInterface(self::INTERFACE_NAME_2));
     }
+
 
     /**
      * @throws \ReflectionException
@@ -147,6 +151,7 @@ class GeneratorTest extends End2EndTest
             3
         ], $reflectClass->getConstant("CONSTANT_ARRAY"));
     }
+
 
     /**
      * @throws \ReflectionException
@@ -173,8 +178,8 @@ class GeneratorTest extends End2EndTest
         $publicProperty = $reflectClass->getProperty("iAmPublic");
         $this->assertNotNull($publicProperty);
         $this->assertTrue($publicProperty->isPublic());
-
     }
+
 
     /**
      * @throws \ReflectionException
@@ -202,6 +207,7 @@ class GeneratorTest extends End2EndTest
         $this->assertTrue($publicProperty->isPublic());
     }
 
+
     /**
      * @throws \ReflectionException
      */
@@ -223,8 +229,8 @@ class GeneratorTest extends End2EndTest
         $this->assertTrue(array_key_exists("iAmProtected", $staticProperties));
         $this->assertTrue(array_key_exists("iAmPublic", $staticProperties));
         $this->assertTrue(array_key_exists("iAmPublicToo", $staticProperties));
-
     }
+
 
     /**
      * @throws \ReflectionException
@@ -246,6 +252,7 @@ class GeneratorTest extends End2EndTest
 
         $this->assertSame(23.122, $reflectClass->getStaticPropertyValue("iAmPublic"));
     }
+
 
     /**
      * @throws \ReflectionException
@@ -274,8 +281,8 @@ class GeneratorTest extends End2EndTest
 
         $constructor = $reflectClass->getConstructor();
         $this->assertTrue($constructor->isPublic());
-
     }
+
 
     /**
      * @throws \ReflectionException
@@ -305,6 +312,7 @@ class GeneratorTest extends End2EndTest
         $this->assertTrue($publicMethod->isStatic());
     }
 
+
     /**
      * @throws \ReflectionException
      */
@@ -330,8 +338,8 @@ class GeneratorTest extends End2EndTest
         $this->assertSame("default", $parameterList[0]->getDefaultValue());
         $this->assertSame(self::OTHER_CLASS_1, $parameterList[1]->getClass()->getName());
         $this->assertTrue($parameterList[1]->allowsNull());
-
     }
+
 
     /**
      *
@@ -386,12 +394,12 @@ class GeneratorTest extends End2EndTest
         $classGenerator->writeToPSR0(self::BASE_DIR);
     }
 
+
     /**
      * @throws \ReflectionException
      */
     public function testDocComment()
     {
-
         $classGenerator = new ClassGenerator('Tests\CommentTest', true);
 
         $classGenerator->addPrivateProperty("comment", "string", null, "commented member");
@@ -414,6 +422,20 @@ class GeneratorTest extends End2EndTest
         $method = $reflection->getMethod("commentedMethod");
         $this->assertNotNull($method);
         $this->assertTrue(strpos($method->getDocComment(), "commented method") !== false);
+    }
+
+
+    public function testWithoutType()
+    {
+        $classGenerator = new ClassGenerator('Tests\NoTypeTest', true);
+        $classGenerator->addPrivateProperty("privateProperty", null, null, "commented member");
+        $classGenerator->addProtectedProperty("protectedProperty", null, null, "commented member");
+        $classGenerator->addPublicProperty("publicProperty", null, null, "commented member");
+
+        $method = $classGenerator->addMethod("test");
+        $method->addParameter(null, "param1");
+
+        $classGenerator->writeToPSR0(self::BASE_DIR);
     }
 
 }
