@@ -412,7 +412,7 @@ class ClassGenerator
     /**
      * @return Method
      */
-    public function addConstructor()
+    public function addConstructor(): Method
     {
         return $this->addMethod("__construct");
     }

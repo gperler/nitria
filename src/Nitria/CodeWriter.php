@@ -96,8 +96,9 @@ class CodeWriter
         $this->addCodeLine('declare(strict_types = 1);', 0, 2);
     }
 
+
     /**
-     * @param string $namespace
+     * @param string|null $namespace
      */
     public function addNamespace(string $namespace = null)
     {
@@ -144,9 +145,10 @@ class CodeWriter
         $this->addCodeLine(" */", $indentCount);
     }
 
+
     /**
      * @param string $classShortName
-     * @param string $extends
+     * @param string|null $extends
      * @param string[] $implementsList
      */
     public function addClassStart(string $classShortName, string $extends = null, array $implementsList = null)

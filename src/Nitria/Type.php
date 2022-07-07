@@ -85,7 +85,7 @@ class Type
     /**
      * @return null|string
      */
-    public function getUseStatement()
+    public function getUseStatement(): ?string
     {
         if (!$this->needsUseStatement()) {
             return null;
@@ -97,7 +97,7 @@ class Type
     /**
      * @return string
      */
-    public function getCodeType()
+    public function getCodeType(): ?string
     {
         if ($this->isVoid) {
             return 'void';
@@ -139,7 +139,7 @@ class Type
     /**
      * @return ClassName
      */
-    public function getClassName()
+    public function getClassName(): ClassName
     {
         return $this->className;
     }

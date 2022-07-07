@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Nitria;
 
@@ -42,6 +42,7 @@ class Property
      */
     protected $codeWriter;
 
+
     /**
      * Property constructor.
      *
@@ -64,6 +65,7 @@ class Property
         $this->codeWriter = new CodeWriter($indent);
     }
 
+
     /**
      * @return boolean
      */
@@ -72,21 +74,23 @@ class Property
         return $this->static;
     }
 
+
     /**
      * @return string[]
      */
-    public function getCodeLineList() : array
+    public function getCodeLineList(): array
     {
         $this->codeWriter->addEmptyLine();
 
         $docBlock = ($this->docComment !== null) ? [$this->docComment] : [];
-        $docBlock[] = "@var " . $this->type->getDocBlockType();
+        $docBlock[] = "@var " . $this->type->getDocBlockType() . '|null';
 
         $this->codeWriter->addDocBlock($docBlock, 1);
 
-        $static = $this->static ? " static" : "";
+        $static = $this->getStatic();
+        $codeType = $this->getCodeType();
 
-        $memberDefinition = $this->modifier . $static . " $" . $this->name;
+        $memberDefinition = $this->modifier . $static . $codeType . ' $' . $this->name;
 
         if ($this->value !== null) {
             $memberDefinition .= " = " . $this->value . ";";
@@ -97,6 +101,28 @@ class Property
         $this->codeWriter->addCodeLine($memberDefinition, 1);
 
         return $this->codeWriter->getCodeLineList();
+    }
+
+
+    /**
+     * @return string
+     */
+    private function getStatic(): string
+    {
+        return $this->static ? ' static' : '';
+    }
+
+
+    /**
+     * @return string
+     */
+    private function getCodeType(): string
+    {
+        $codeType = $this->type->getCodeType();
+        if (!$codeType) {
+            return ' ';
+        }
+        return ' ?' . $codeType;
     }
 
 }

@@ -15,7 +15,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->deleteGeneratedCode(self::BASE_DIR);
@@ -25,7 +25,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    protected function tearDown()
+    protected function tearDown() : void
     {
         parent::tearDown();
         $this->deleteGeneratedCode(self::BASE_DIR);

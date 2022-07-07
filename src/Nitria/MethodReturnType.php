@@ -34,7 +34,7 @@ class MethodReturnType
     /**
      * @return string
      */
-    public function getDocBlockReturnType()
+    public function getDocBlockReturnType(): string
     {
         if ($this->type === null) {
             return '@return void';
@@ -46,7 +46,7 @@ class MethodReturnType
     /**
      * @return null|string
      */
-    public function getSignatureReturnType()
+    public function getSignatureReturnType(): ?string
     {
         if ($this->type === null || $this->type->getCodeType() === null) {
             return '';
