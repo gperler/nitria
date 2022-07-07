@@ -13,37 +13,39 @@ class MethodParameter
     /**
      * @var Type
      */
-    private $type;
+    private Type $type;
 
     /**
      * @var string
      */
-    private $name;
+    private string $name;
+
+    /**
+     * @var string|null
+     */
+    private ?string $defaultValue;
+
+    /**
+     * @var string|null
+     */
+    private ?string $docComment;
 
     /**
      * @var bool
      */
-    private $defaultValue;
+    private bool $allowsNull;
 
-    /**
-     * @var string
-     */
-    private $docComment;
-
-    /**
-     * @var bool
-     */
-    private $allowsNull;
 
     /**
      * MethodParameter constructor.
+     *
      * @param Type $type
      * @param string $name
      * @param string|null $defaultValue
      * @param null $docComment
      * @param bool $allowsNull
      */
-    public function __construct(Type $type, string $name, string $defaultValue = null, $docComment = null, $allowsNull = false)
+    public function __construct(Type $type, string $name, string $defaultValue = null, $docComment = null, bool $allowsNull = false)
     {
         $this->type = $type;
         $this->name = $name;
@@ -52,10 +54,11 @@ class MethodParameter
         $this->allowsNull = $allowsNull;
     }
 
+
     /**
      * @return string
      */
-    public function getPHPDocLine()
+    public function getPHPDocLine(): string
     {
         $docBlockType = ($this->getAllowsNull() || $this->defaultValue === 'null') ? $this->type->getDocBlockType() . '|null' : $this->type->getDocBlockType();
 
@@ -66,6 +69,7 @@ class MethodParameter
         return $docBlockLine;
     }
 
+
     /**
      * @return string
      */
@@ -75,7 +79,7 @@ class MethodParameter
         if ($codeType === null) {
             return '$' . $this->name;
         }
-        if ($this->getAllowsNull() && ($this->defaultValue === null) ) {
+        if ($this->getAllowsNull() && ($this->defaultValue === null)) {
             return '?' . $codeType . ' $' . $this->name;
         }
 

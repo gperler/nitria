@@ -10,12 +10,12 @@ class CodeWriter
     /**
      * @var string
      */
-    protected $indent;
+    protected string $indent;
 
     /**
      * @var string[]
      */
-    protected $codeLineList;
+    protected array $codeLineList;
 
     /**
      * IndentWriter constructor.
@@ -49,7 +49,7 @@ class CodeWriter
      * @param int $indentCount
      * @param int $lineBreakCount
      */
-    public function addCodeLine(string $content, int $indentCount, int $lineBreakCount = 1)
+    public function addCodeLine(string $content, int $indentCount, int $lineBreakCount = 1): void
     {
         $codeLine = '';
         for ($i = 0; $i < $indentCount; $i++) {
@@ -64,7 +64,7 @@ class CodeWriter
     /**
      * @param array $codeLineList
      */
-    public function addCodeLineList(array $codeLineList)
+    public function addCodeLineList(array $codeLineList): void
     {
         $this->codeLineList = array_merge($this->codeLineList, $codeLineList);
     }
@@ -72,7 +72,7 @@ class CodeWriter
     /**
      *
      */
-    public function addEmptyLine()
+    public function addEmptyLine(): void
     {
         $this->codeLineList[] = "";
     }
@@ -80,7 +80,7 @@ class CodeWriter
     /**
      *
      */
-    public function addPHPDeclaration()
+    public function addPHPDeclaration(): void
     {
         $this->addCodeLine('<?php', 0, 2);
     }
@@ -88,7 +88,7 @@ class CodeWriter
     /**
      * @param bool $strict
      */
-    public function addStrictStatement(bool $strict)
+    public function addStrictStatement(bool $strict): void
     {
         if (!$strict) {
             return;
@@ -100,7 +100,7 @@ class CodeWriter
     /**
      * @param string|null $namespace
      */
-    public function addNamespace(string $namespace = null)
+    public function addNamespace(string $namespace = null): void
     {
         if ($namespace === null) {
             return;
@@ -111,7 +111,7 @@ class CodeWriter
     /**
      * @param ClassName[] $classNameList
      */
-    public function addUseStatementList(array $classNameList)
+    public function addUseStatementList(array $classNameList): void
     {
         $useStatementList = [];
         foreach ($classNameList as $className) {
@@ -136,7 +136,7 @@ class CodeWriter
      * @param array $docElementList
      * @param int $indentCount
      */
-    public function addDocBlock(array $docElementList, int $indentCount)
+    public function addDocBlock(array $docElementList, int $indentCount): void
     {
         $this->addCodeLine("/**", $indentCount);
         foreach ($docElementList as $lineItem) {
@@ -151,7 +151,7 @@ class CodeWriter
      * @param string|null $extends
      * @param string[] $implementsList
      */
-    public function addClassStart(string $classShortName, string $extends = null, array $implementsList = null)
+    public function addClassStart(string $classShortName, string $extends = null, array $implementsList = null): void
     {
         $line = 'class ' . trim($classShortName, "\\");
 
@@ -170,7 +170,7 @@ class CodeWriter
     /**
      *
      */
-    public function addClassEnd()
+    public function addClassEnd(): void
     {
         $this->addCodeLine("}", 0);
     }

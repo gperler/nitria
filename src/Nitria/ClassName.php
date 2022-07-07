@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Nitria;
 
@@ -14,22 +14,23 @@ class ClassName
     /**
      * @var string
      */
-    protected $className;
+    protected string $className;
 
     /**
      * @var string
      */
-    protected $classShortName;
+    protected string $classShortName;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $namespaceName;
+    protected ?string $namespaceName;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $as;
+    protected ?string $as;
+
 
     /**
      * ClassName constructor.
@@ -43,6 +44,7 @@ class ClassName
             $this->initializeAs($className, $as);
             return;
         }
+        $this->as = null;
 
         $slashCount = substr_count($className, self::BS);
         if ($slashCount === 0 || ($slashCount === 1 && strpos($className, self::BS) === 0)) {
@@ -55,10 +57,11 @@ class ClassName
         $this->classShortName = StringUtil::getEndAfterLast($this->className, self::BS);
     }
 
+
     /**
      * @param string $className
      */
-    protected function initializeDefaultNamespace(string $className)
+    protected function initializeDefaultNamespace(string $className): void
     {
         $className = self::BS . trim($className, "\\");
         $this->className = $className;
@@ -66,17 +69,19 @@ class ClassName
         $this->namespaceName = null;
     }
 
+
     /**
      * @param string $className
      * @param string $as
      */
-    protected function initializeAs(string $className, string $as)
+    protected function initializeAs(string $className, string $as): void
     {
         $this->className = trim($className, self::BS);
         $this->namespaceName = StringUtil::getStartBeforeLast($this->className, self::BS);
         $this->classShortName = $as;
         $this->as = $as;
     }
+
 
     /**
      * @return string
@@ -86,6 +91,7 @@ class ClassName
         return $this->className;
     }
 
+
     /**
      * @return string
      */
@@ -94,48 +100,52 @@ class ClassName
         return $this->classShortName;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getNamespaceName()
-    {
-        return $this->namespaceName;
-    }
 
     /**
      * @return string|null
      */
-    public function getAs()
+    public function getNamespaceName(): ?string
+    {
+        return $this->namespaceName;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getAs(): ?string
     {
         return $this->as;
     }
+
 
     /**
      * @param ClassName $otherClass
      *
      * @return bool
      */
-    public function isNamespaceIdentical(ClassName $otherClass) : bool
+    public function isNamespaceIdentical(ClassName $otherClass): bool
     {
         return $this->namespaceName === $otherClass->getNamespaceName();
     }
 
+
     /**
      * @return null|string
      */
-    public function getUseStatment()
+    public function getUseStatment(): ?string
     {
         if ($this->as === null) {
             return $this->className;
         }
         return $this->className . " as " . $this->as;
-
     }
+
 
     /**
      * @return bool
      */
-    public function needsUseStatement() : bool
+    public function needsUseStatement(): bool
     {
         return $this->namespaceName !== null;
     }

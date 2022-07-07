@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Nitria;
 
@@ -13,17 +13,18 @@ class Constant
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var string
      */
-    protected $value;
+    protected string $value;
 
     /**
      * @var CodeWriter
      */
-    protected $codeWriter;
+    protected CodeWriter $codeWriter;
+
 
     /**
      * Constant constructor.
@@ -39,10 +40,11 @@ class Constant
         $this->codeWriter = new CodeWriter($indent);
     }
 
+
     /**
      * @return string[]
      */
-    public function getCodeLineList() : array
+    public function getCodeLineList(): array
     {
         $constDefinition = "const " . $this->name . " = " . $this->value . ";";
         $this->codeWriter->addEmptyLine();

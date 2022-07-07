@@ -10,67 +10,67 @@ class Method
     /**
      * @var ClassGenerator
      */
-    protected $classGenerator;
+    protected ClassGenerator $classGenerator;
 
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var string
      */
-    protected $modifier;
+    protected string $modifier;
 
     /**
      * @var bool
      */
-    protected $static;
+    protected bool $static;
 
     /**
      * @var bool
      */
-    protected $constructor;
+    protected bool $isConstructor;
 
     /**
      * @var string
      */
-    protected $indent;
+    protected string $indent;
 
     /**
      * @var MethodReturnType
      */
-    protected $methodReturnType;
+    protected MethodReturnType $methodReturnType;
 
     /**
      * @var MethodParameter[]
      */
-    protected $methodParameterList;
+    protected array $methodParameterList;
 
     /**
      * @var CodeWriter
      */
-    protected $methodSignature;
+    protected CodeWriter $methodSignature;
 
     /**
      * @var CodeWriter
      */
-    protected $methodBody;
+    protected CodeWriter $methodBody;
 
     /**
      * @var int
      */
-    protected $currentIndent;
+    protected int $currentIndent;
 
     /**
      * @var string[]
      */
-    protected $docBlockComment;
+    protected array $docBlockComment;
 
     /**
      * @var Type[]
      */
-    protected $exceptionList;
+    protected array $exceptionList;
 
 
     /**
@@ -87,10 +87,12 @@ class Method
         $this->name = $name;
         $this->modifier = $modifier;
         $this->static = $static;
+        $this->isConstructor = $name === '__construct';
+
         $this->methodReturnType = new MethodReturnType();
+        $this->methodReturnType->setIsConstructor($this->isConstructor);
         $this->methodParameterList = [];
         $this->currentIndent = 2;
-        $this->constructor = $name === '__construct';
         $this->exceptionList = [];
         $this->docBlockComment = [];
 
@@ -103,7 +105,7 @@ class Method
     /**
      * @param string $className
      */
-    public function addUsedClassName(string $className)
+    public function addUsedClassName(string $className): void
     {
         $this->classGenerator->addUsedClassName($className);
     }
@@ -116,7 +118,7 @@ class Method
      * @param string|null $docComment
      * @param bool $allowsNull
      */
-    public function addParameter(?string $typeName, string $name, string $defaultValue = null, string $docComment = null, $allowsNull = false)
+    public function addParameter(?string $typeName, string $name, string $defaultValue = null, string $docComment = null, bool $allowsNull = false): void
     {
         $type = new Type($typeName, $this->classGenerator->getUseStatementList());
         $this->classGenerator->addUseClassForType($type);
@@ -128,7 +130,7 @@ class Method
      * @param string|null $typeName
      * @param bool $nullAble
      */
-    public function setReturnType(string $typeName = null, bool $nullAble = true)
+    public function setReturnType(string $typeName = null, bool $nullAble = true): void
     {
         $type = new Type($typeName, $this->classGenerator->getUseStatementList());
         $this->classGenerator->addUseClassForType($type);
@@ -140,7 +142,7 @@ class Method
     /**
      * @param string $typeName
      */
-    public function addException(string $typeName)
+    public function addException(string $typeName): void
     {
         $type = new Type($typeName, $this->classGenerator->getUseStatementList());
         $this->classGenerator->addUseClassForType($type);
@@ -169,48 +171,66 @@ class Method
     /**
      * @return bool
      */
-    public function isConstructor(): bool
+    public function isIsConstructor(): bool
     {
-        return $this->constructor;
+        return $this->isConstructor;
     }
 
 
     /**
-     * @param $content
+     * @param string $content
      * @param int $lineBreaks
      */
-    public function addCodeLine(string $content, int $lineBreaks = 1)
+    public function addCodeLine(string $content, int $lineBreaks = 1): void
     {
         $this->methodBody->addCodeLine($content, $this->currentIndent, $lineBreaks);
     }
 
 
-    public function addNewLine()
+    /**
+     * @return void
+     */
+    public function addNewLine(): void
     {
         $this->methodBody->addCodeLine('', 0, 1);
     }
 
 
-    public function incrementIndent()
+    /**
+     * @return void
+     */
+    public function incrementIndent(): void
     {
         $this->currentIndent++;
     }
 
 
-    public function decrementIndent()
+    /**
+     * @return void
+     */
+    public function decrementIndent(): void
     {
         $this->currentIndent--;
     }
 
 
-    public function addTry()
+    /**
+     * @return void
+     */
+    public function addTry(): void
     {
         $this->addCodeLine('try {');
         $this->incrementIndent();
     }
 
 
-    public function addCatchStart(string $className, string $variableName)
+    /**
+     * @param string $className
+     * @param string $variableName
+     *
+     * @return void
+     */
+    public function addCatchStart(string $className, string $variableName): void
     {
         $type = new Type($className, $this->classGenerator->getUseStatementList());
         $this->classGenerator->addUseClassForType($type);
@@ -221,7 +241,10 @@ class Method
     }
 
 
-    public function addCatchEnd()
+    /**
+     * @return void
+     */
+    public function addCatchEnd(): void
     {
         $this->decrementIndent();
         $this->addCodeLine('}');
@@ -229,9 +252,9 @@ class Method
 
 
     /**
-     * @param $condition
+     * @param string $condition
      */
-    public function addIfStart(string $condition)
+    public function addIfStart(string $condition): void
     {
         $this->addCodeLine("if ($condition) {");
         $this->currentIndent++;
@@ -241,7 +264,7 @@ class Method
     /**
      *
      */
-    public function addIfElse()
+    public function addIfElse(): void
     {
         $this->currentIndent--;
         $this->addCodeLine("} else {");
@@ -252,7 +275,7 @@ class Method
     /**
      * @param string $condition
      */
-    public function addIfElseIf(string $condition)
+    public function addIfElseIf(string $condition): void
     {
         $this->currentIndent--;
         $this->addCodeLine("} else if ($condition){");
@@ -263,7 +286,7 @@ class Method
     /**
      *
      */
-    public function addIfEnd()
+    public function addIfEnd(): void
     {
         $this->currentIndent--;
         $this->addCodeLine("}");
@@ -273,7 +296,7 @@ class Method
     /**
      * @param string $condition
      */
-    public function addWhileStart(string $condition)
+    public function addWhileStart(string $condition): void
     {
         $this->addCodeLine("while ($condition) {", 1);
         $this->currentIndent++;
@@ -283,7 +306,7 @@ class Method
     /**
      *
      */
-    public function addWhileEnd()
+    public function addWhileEnd(): void
     {
         $this->currentIndent--;
         $this->addCodeLine("}");
@@ -293,7 +316,7 @@ class Method
     /**
      * @param string $condition
      */
-    public function addForeachStart(string $condition)
+    public function addForeachStart(string $condition): void
     {
         $this->addCodeLine("foreach ($condition) {", 1);
         $this->currentIndent++;
@@ -303,7 +326,7 @@ class Method
     /**
      *
      */
-    public function addForeachEnd()
+    public function addForeachEnd(): void
     {
         $this->currentIndent--;
         $this->addCodeLine("}");
@@ -313,7 +336,7 @@ class Method
     /**
      * @param string $variableName
      */
-    public function addSwitch(string $variableName)
+    public function addSwitch(string $variableName): void
     {
         $this->addCodeLine("switch ($variableName) {");
         $this->currentIndent++;
@@ -323,34 +346,46 @@ class Method
     /**
      * @param string $value
      */
-    public function addSwitchCase(string $value)
+    public function addSwitchCase(string $value): void
     {
         $this->addCodeLine("case $value:");
         $this->currentIndent++;
     }
 
 
-    public function addSwitchBreak()
+    /**
+     * @return void
+     */
+    public function addSwitchBreak(): void
     {
         $this->addCodeLine("break;");
         $this->currentIndent--;
     }
 
 
-    public function addSwitchReturnBreak()
+    /**
+     * @return void
+     */
+    public function addSwitchReturnBreak(): void
     {
         $this->currentIndent--;
     }
 
 
-    public function addSwitchDefault()
+    /**
+     * @return void
+     */
+    public function addSwitchDefault(): void
     {
         $this->addCodeLine("default:");
         $this->currentIndent++;
     }
 
 
-    public function addSwitchEnd()
+    /**
+     * @return void
+     */
+    public function addSwitchEnd(): void
     {
         $this->currentIndent--;
         $this->addCodeLine("}");
@@ -372,7 +407,7 @@ class Method
     /**
      *
      */
-    protected function generateMethod()
+    protected function generateMethod(): void
     {
         $this->generateDocBlock();
         $this->generateMethodDefinition();
@@ -382,14 +417,14 @@ class Method
 
     /**
      */
-    protected function generateDocBlock()
+    protected function generateDocBlock(): void
     {
         $phpDocBlock = $this->docBlockComment;
         foreach ($this->methodParameterList as $parameter) {
             $phpDocBlock[] = $parameter->getPHPDocLine();
         }
         $phpDocBlock[] = '';
-        if (!$this->constructor) {
+        if (!$this->isConstructor) {
             $phpDocBlock[] = $this->methodReturnType->getDocBlockReturnType();
         }
         foreach ($this->exceptionList as $exception) {
@@ -403,7 +438,7 @@ class Method
     /**
      *
      */
-    protected function generateMethodDefinition()
+    protected function generateMethodDefinition(): void
     {
         $static = $this->static ? " static " : " ";
         $definition = $this->modifier . $static . "function " . $this->name;
@@ -431,7 +466,7 @@ class Method
     /**
      * @param string $docBlockComment
      */
-    public function setDocBlockComment(string $docBlockComment)
+    public function setDocBlockComment(string $docBlockComment): void
     {
         $this->docBlockComment = [$docBlockComment];
     }

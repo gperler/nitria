@@ -20,24 +20,24 @@ class Type
     const TYPE_VOID = 'void';
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $scalarName;
+    protected ?string $scalarName;
 
     /**
-     * @var ClassName
+     * @var ClassName|null
      */
-    protected $className;
-
-    /**
-     * @var bool
-     */
-    protected $isArray;
+    protected ?ClassName $className;
 
     /**
      * @var bool
      */
-    protected $isVoid;
+    protected bool $isArray;
+
+    /**
+     * @var bool
+     */
+    protected bool $isVoid;
 
 
     /**
@@ -48,6 +48,11 @@ class Type
      */
     public function __construct(string $type = null, array $registeredClassNameList = [])
     {
+        $this->scalarName = null;
+        $this->className = null;
+        $this->isArray = false;
+        $this->isVoid = false;
+
         if ($type === null) {
             return;
         }
@@ -95,7 +100,7 @@ class Type
 
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCodeType(): ?string
     {

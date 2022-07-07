@@ -10,37 +10,37 @@ class Property
     /**
      * @var string
      */
-    protected $modifier;
+    protected string $modifier;
 
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var Type
      */
-    protected $type;
+    protected Type $type;
 
     /**
      * @var bool
      */
-    protected $static;
+    protected bool $static;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $value;
+    protected ?string $value;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $docComment;
+    protected ?string $docComment;
 
     /**
      * @var CodeWriter
      */
-    protected $codeWriter;
+    protected CodeWriter $codeWriter;
 
 
     /**

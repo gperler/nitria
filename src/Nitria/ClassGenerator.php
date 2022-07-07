@@ -16,57 +16,58 @@ class ClassGenerator
     /**
      * @var string
      */
-    protected $indent;
+    protected string $indent;
 
     /**
      * @var ClassName
      */
-    protected $className;
+    protected ClassName $className;
 
     /**
      * @var Constant[]
      */
-    protected $constantList;
+    protected array $constantList;
 
     /**
      * @var Property[]
      */
-    protected $propertyList;
+    protected array $propertyList;
 
     /**
      * @var Method[]
      */
-    protected $methodList;
+    protected array $methodList;
 
     /**
      * @var ClassName[]
      */
-    protected $usedClassNameList;
+    protected array $usedClassNameList;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $extendsClassShortName;
+    protected ?string $extendsClassShortName;
 
     /**
      * @var string[]
      */
-    protected $implementClassNameList;
+    protected array $implementClassNameList;
 
     /**
      * @var bool
      */
-    protected $strictTypes;
+    protected bool $strictTypes;
 
     /**
      * @var CodeWriter
      */
-    protected $codeWriter;
+    protected CodeWriter $codeWriter;
 
     /**
      * @var string[]
      */
-    protected $docBlockComment;
+    protected array $docBlockComment;
+
 
     /**
      * ClassGenerator constructor.
@@ -90,10 +91,11 @@ class ClassGenerator
         $this->indent = $indent;
     }
 
+
     /**
      * @param string $basePath
      */
-    public function writeToPSR0(string $basePath)
+    public function writeToPSR0(string $basePath): void
     {
         $this->generate();
 
@@ -104,11 +106,12 @@ class ClassGenerator
         $file->putContents($this->codeWriter->getCode());
     }
 
+
     /**
      * @param string $basePath
      * @param string $psr4Prefix
      */
-    public function writeToPSR4(string $basePath, string $psr4Prefix)
+    public function writeToPSR4(string $basePath, string $psr4Prefix): void
     {
         $this->generate();
 
@@ -119,22 +122,23 @@ class ClassGenerator
         $file->putContents($this->codeWriter->getCode());
     }
 
+
     /**
      * @param string $fileName
      */
-    public function writeToFile(string $fileName)
+    public function writeToFile(string $fileName): void
     {
         $this->generate();
         $file = new File($fileName);
         $file->putContents($this->codeWriter->getCode());
     }
 
+
     /**
      *
      */
-    protected function generate()
+    protected function generate(): void
     {
-
         $this->codeWriter->addPHPDeclaration();
 
         $this->codeWriter->addStrictStatement($this->strictTypes);
@@ -164,13 +168,13 @@ class ClassGenerator
         $this->generateMethod(false);
 
         $this->codeWriter->addClassEnd();
-
     }
+
 
     /**
      * @param bool $static
      */
-    protected function generateProperty(bool $static)
+    protected function generateProperty(bool $static): void
     {
         foreach ($this->propertyList as $member) {
             if ($static !== $member->isStatic()) {
@@ -180,46 +184,51 @@ class ClassGenerator
         }
     }
 
+
     /**
      * @param bool $static
      */
-    protected function generateMethod(bool $static)
+    protected function generateMethod(bool $static): void
     {
         foreach ($this->methodList as $method) {
-            if ($static !== $method->isStatic() || $method->isConstructor()) {
+            if ($static !== $method->isStatic() || $method->isIsConstructor()) {
+                continue;
+            }
+            $this->codeWriter->addCodeLineList($method->getCodeLineList());
+            $this->codeWriter->addEmptyLine();
+        }
+    }
+
+
+    /**
+     *
+     */
+    protected function generateConstructor(): void
+    {
+        foreach ($this->methodList as $method) {
+            if (!$method->isIsConstructor()) {
                 continue;
             }
             $this->codeWriter->addCodeLineList($method->getCodeLineList());
         }
     }
 
-    /**
-     *
-     */
-    protected function generateConstructor()
-    {
-        foreach ($this->methodList as $method) {
-            if (!$method->isConstructor()) {
-                continue;
-            }
-            $this->codeWriter->addCodeLineList($method->getCodeLineList());
-        }
-    }
 
     /**
      * @param string $className
      * @param string|null $as
      */
-    public function addUsedClassName(string $className, string $as = null)
+    public function addUsedClassName(string $className, string $as = null): void
     {
         $class = new ClassName($className, $as);
         $this->addUseClassForClassName($class);
     }
 
+
     /**
      * @param Type $type
      */
-    public function addUseClassForType(Type $type)
+    public function addUseClassForType(Type $type): void
     {
         if (!$type->needsUseStatement()) {
             return;
@@ -227,10 +236,11 @@ class ClassGenerator
         $this->addUseClassForClassName($type->getClassName());
     }
 
+
     /**
      * @param ClassName $className
      */
-    public function addUseClassForClassName(ClassName $className)
+    public function addUseClassForClassName(ClassName $className): void
     {
         if ($className->isNamespaceIdentical($this->className)) {
             return;
@@ -238,116 +248,127 @@ class ClassGenerator
         $this->usedClassNameList[] = $className;
     }
 
+
     /**
-     * @param string|null $className
+     * @param string $className
      */
-    public function setExtends(string $className)
+    public function setExtends(string $className): void
     {
         $className = new ClassName($className);
         $this->extendsClassShortName = $className->getClassShortName();
         $this->addUseClassForClassName($className);
     }
 
+
     /**
      * @param string $interfaceName
      */
-    public function addImplements(string $interfaceName)
+    public function addImplements(string $interfaceName): void
     {
         $className = new ClassName($interfaceName);
         $this->addUseClassForClassName($className);
         $this->implementClassNameList[] = $className->getClassShortName();
     }
 
+
     /**
      * @param string $name
      * @param string $value
      */
-    public function addConstant(string $name, string $value)
+    public function addConstant(string $name, string $value): void
     {
         $this->constantList[] = new Constant($name, $value, $this->indent);
     }
 
+
     /**
      * @param string $name
-     * @param string $type
+     * @param string|null $type
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addPublicStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null)
+    public function addPublicStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null): void
     {
         $this->addProperty($name, $type, "public", true, $value, $docComment);
     }
 
+
     /**
      * @param string $name
-     * @param string $type
+     * @param string|null $type
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addProtectedStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null)
+    public function addProtectedStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null): void
     {
         $this->addProperty($name, $type, "protected", true, $value, $docComment);
     }
 
+
     /**
      * @param string $name
-     * @param string $type
+     * @param string|null $type
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addPrivateStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null)
+    public function addPrivateStaticProperty(string $name, ?string $type, string $value = null, string $docComment = null): void
     {
         $this->addProperty($name, $type, "private", true, $value, $docComment);
     }
 
+
     /**
      * @param string $name
-     * @param string $type
+     * @param string|null $type
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addPublicProperty(string $name, ?string $type, string $value = null, string $docComment = null)
+    public function addPublicProperty(string $name, ?string $type, string $value = null, string $docComment = null): void
     {
         $this->addProperty($name, $type, "public", false, $value, $docComment);
     }
 
+
     /**
      * @param string $name
-     * @param string $type
+     * @param string|null $type
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addProtectedProperty(string $name, ?string $type, string $value = null, string $docComment = null)
+    public function addProtectedProperty(string $name, ?string $type, string $value = null, string $docComment = null): void
     {
         $this->addProperty($name, $type, "protected", false, $value, $docComment);
     }
 
+
     /**
      * @param string $name
-     * @param string $type
+     * @param string|null $type
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addPrivateProperty(string $name, ?string $type, string $value = null, string $docComment = null)
+    public function addPrivateProperty(string $name, ?string $type, string $value = null, string $docComment = null): void
     {
         $this->addProperty($name, $type, "private", false, $value, $docComment);
     }
 
+
     /**
      * @param string $name
-     * @param string $typeName
+     * @param string|null $typeName
      * @param string $modifier
      * @param bool $static
      * @param string|null $value
      * @param string|null $docComment
      */
-    public function addProperty(string $name, ?string $typeName, string $modifier = "private", bool $static = false, string $value = null, string $docComment = null)
+    public function addProperty(string $name, ?string $typeName, string $modifier = "private", bool $static = false, string $value = null, string $docComment = null): void
     {
         $type = new Type($typeName, $this->usedClassNameList);
         $this->addUseClassForType($type);
 
         $this->propertyList[] = new Property($modifier, $name, $type, $static, $this->indent, $value, $docComment);
     }
+
 
     /**
      * @param string $name
@@ -359,6 +380,7 @@ class ClassGenerator
         return $this->addMethod($name, "public", true);
     }
 
+
     /**
      * @param string $name
      *
@@ -368,6 +390,7 @@ class ClassGenerator
     {
         return $this->addMethod($name, "protected", true);
     }
+
 
     /**
      * @param string $name
@@ -379,6 +402,7 @@ class ClassGenerator
         return $this->addMethod($name, "private", true);
     }
 
+
     /**
      * @param string $name
      *
@@ -388,6 +412,7 @@ class ClassGenerator
     {
         return $this->addMethod($name);
     }
+
 
     /**
      * @param string $name
@@ -399,6 +424,7 @@ class ClassGenerator
         return $this->addMethod($name, "protected");
     }
 
+
     /**
      * @param string $name
      *
@@ -409,6 +435,7 @@ class ClassGenerator
         return $this->addMethod($name, "private");
     }
 
+
     /**
      * @return Method
      */
@@ -416,6 +443,7 @@ class ClassGenerator
     {
         return $this->addMethod("__construct");
     }
+
 
     /**
      * @param string $name
@@ -430,6 +458,7 @@ class ClassGenerator
         return $this->addMethodObject($method);
     }
 
+
     /**
      * @param Method $method
      *
@@ -441,6 +470,7 @@ class ClassGenerator
         return $method;
     }
 
+
     /**
      * @return string
      */
@@ -449,6 +479,7 @@ class ClassGenerator
         return $this->className->getClassName();
     }
 
+
     /**
      * @return string
      */
@@ -456,6 +487,7 @@ class ClassGenerator
     {
         return $this->className->getClassShortName();
     }
+
 
     /**
      * @return string
@@ -468,6 +500,7 @@ class ClassGenerator
         return str_replace(self::BACKSLASH, DIRECTORY_SEPARATOR, $this->className->getNamespaceName()) . DIRECTORY_SEPARATOR;
     }
 
+
     /**
      * @return string
      */
@@ -476,8 +509,10 @@ class ClassGenerator
         return $this->getPSR0Path() . $this->getClassShortName() . self::PHP_SUFFIX;
     }
 
+
     /**
      * @param string $psr4Prefix
+     *
      * @return string
      */
     public function getPSR4Path(string $psr4Prefix): string
@@ -491,14 +526,17 @@ class ClassGenerator
         return str_replace(self::BACKSLASH, DIRECTORY_SEPARATOR, $relevantNamespace) . DIRECTORY_SEPARATOR;
     }
 
+
     /**
      * @param string $psr4Prefix
+     *
      * @return string
      */
     public function getPSR4File(string $psr4Prefix): string
     {
         return $this->getPSR4Path($psr4Prefix) . $this->getClassShortName() . self::PHP_SUFFIX;
     }
+
 
     /**
      * @return string
@@ -508,18 +546,20 @@ class ClassGenerator
         return $this->indent;
     }
 
+
     /**
      * @return ClassName[]
      */
-    public function getUseStatementList()
+    public function getUseStatementList(): array
     {
         return $this->usedClassNameList;
     }
 
+
     /**
      * @param string $docBlockComment
      */
-    public function addDocBlockComment(string $docBlockComment)
+    public function addDocBlockComment(string $docBlockComment): void
     {
         $this->docBlockComment[] = $docBlockComment;
     }
