@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace NitriaTest\End2End;
 
+use Codeception\Test\Unit;
 use Nitria\ClassGenerator;
 
-class End2EndTest extends \PHPUnit_Framework_TestCase
+class End2EndTest extends Unit
 {
 
     const BASE_DIR = __DIR__ . '/gen/';
@@ -15,7 +16,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->deleteGeneratedCode(self::BASE_DIR);
@@ -25,7 +26,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    protected function tearDown() : void
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->deleteGeneratedCode(self::BASE_DIR);
@@ -35,7 +36,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    protected function deleteGeneratedCode(string $dir)
+    protected function deleteGeneratedCode(string $dir): void
     {
         if (!is_dir($dir)) {
             return;
@@ -60,7 +61,7 @@ class End2EndTest extends \PHPUnit_Framework_TestCase
      * @return object
      * @throws \ReflectionException
      */
-    protected function getReflectInstance(ClassGenerator $classGenerator)
+    protected function getReflectInstance(ClassGenerator $classGenerator): object
     {
         require_once self::BASE_DIR . $classGenerator->getPSR0File();
 

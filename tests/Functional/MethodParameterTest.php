@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace NitriaTest\Functional;
 
+use Codeception\Test\Unit;
 use Nitria\MethodParameter;
 use Nitria\Type;
 
-class MethodParameterTest extends \PHPUnit_Framework_TestCase
+class MethodParameterTest extends Unit
 {
 
     /**

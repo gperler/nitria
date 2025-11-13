@@ -1,15 +1,17 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NitriaTest\Functional;
 
+use Codeception\Test\Unit;
 use Nitria\ClassName;
 
-class ClassNameTest extends \PHPUnit_Framework_TestCase
+class ClassNameTest extends Unit
 {
 
-    public function testClassName()
+    public
+    function testClassName()
     {
         $className = '\Random\Class\Name';
 
@@ -27,7 +29,8 @@ class ClassNameTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testDefaultNamespaceClass()
+    public
+    function testDefaultNamespaceClass()
     {
         $className = '\PHPUnit_Framework_TestCase';
 

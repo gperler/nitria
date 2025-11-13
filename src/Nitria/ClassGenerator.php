@@ -16,58 +16,74 @@ class ClassGenerator
     /**
      * @var string
      */
-    protected string $indent;
+    private string $indent;
 
     /**
      * @var ClassName
      */
-    protected ClassName $className;
+    private ClassName $className;
+
+    /**
+     * @var ClassType
+     */
+    private ClassType $classType;
+
+
+    /**
+     * @var ScalarType|null
+     */
+    private ?ScalarType $enumType;
 
     /**
      * @var Constant[]
      */
-    protected array $constantList;
+    private array $constantList;
 
     /**
      * @var Property[]
      */
-    protected array $propertyList;
+    private array $propertyList;
 
     /**
      * @var Method[]
      */
-    protected array $methodList;
+    private array $methodList;
 
     /**
      * @var ClassName[]
      */
-    protected array $usedClassNameList;
+    private array $usedClassNameList;
 
     /**
      * @var string|null
      */
-    protected ?string $extendsClassShortName;
+    private ?string $extendsClassShortName;
 
     /**
      * @var string[]
      */
-    protected array $implementClassNameList;
+    private array $implementClassNameList;
 
     /**
      * @var bool
      */
-    protected bool $strictTypes;
+    private bool $strictTypes;
 
     /**
      * @var CodeWriter
      */
-    protected CodeWriter $codeWriter;
+    private CodeWriter $codeWriter;
 
     /**
      * @var string[]
      */
-    protected array $docBlockComment;
+    private array $docBlockComment;
 
+
+    /**
+     * @var array
+     */
+    private array $enumCaseList;
 
     /**
      * ClassGenerator constructor.
@@ -79,6 +95,8 @@ class ClassGenerator
     public function __construct(string $className, bool $strictTypes = true, string $indent = "    ")
     {
         $this->className = new ClassName($className);
+        $this->classType = ClassType::ClassType;
+        $this->enumType = null;
         $this->usedClassNameList = [];
         $this->extendsClassShortName = null;
         $this->implementClassNameList = [];
@@ -86,11 +104,40 @@ class ClassGenerator
         $this->propertyList = [];
         $this->methodList = [];
         $this->docBlockComment = [];
+        $this->enumCaseList = [];
         $this->strictTypes = $strictTypes;
         $this->codeWriter = new CodeWriter($indent);
         $this->indent = $indent;
     }
 
+    /**
+     * @param ClassType $classType
+     * @return void
+     */
+    public function setClassType(ClassType $classType): void
+    {
+        $this->classType = $classType;
+    }
+
+    /**
+     * @param ScalarType|null $enumType
+     * @return void
+     */
+    public function setEnumType(?ScalarType $enumType): void
+    {
+        $this->enumType = $enumType;
+    }
+
+
+    /**
+     * @param string $caseName
+     * @param string $caseValue
+     * @return void
+     */
+    public function addEnumCase(string $caseName, string $caseValue): void
+    {
+        $this->enumCaseList[$caseName] = $caseValue;
+    }
 
     /**
      * @param string $basePath
@@ -137,7 +184,7 @@ class ClassGenerator
     /**
      *
      */
-    protected function generate(): void
+    private function generate(): void
     {
         $this->codeWriter->addPHPDeclaration();
 
@@ -151,7 +198,13 @@ class ClassGenerator
             $this->codeWriter->addDocBlock($this->docBlockComment, 0);
         }
 
-        $this->codeWriter->addClassStart($this->className->getClassShortName(), $this->extendsClassShortName, $this->implementClassNameList);
+        $this->codeWriter->addClassStart(
+            $this->className->getClassShortName(),
+            $this->extendsClassShortName,
+            $this->implementClassNameList,
+            $this->classType,
+            $this->enumType,
+        );
 
         foreach ($this->constantList as $constant) {
             $this->codeWriter->addCodeLineList($constant->getCodeLineList());
@@ -167,6 +220,10 @@ class ClassGenerator
 
         $this->generateMethod(false);
 
+        foreach ($this->enumCaseList as $caseName => $caseValue) {
+            $this->codeWriter->addEnumCase($caseName, $caseValue);
+        }
+
         $this->codeWriter->addClassEnd();
     }
 
@@ -174,7 +231,7 @@ class ClassGenerator
     /**
      * @param bool $static
      */
-    protected function generateProperty(bool $static): void
+    private function generateProperty(bool $static): void
     {
         foreach ($this->propertyList as $member) {
             if ($static !== $member->isStatic()) {
@@ -188,7 +245,7 @@ class ClassGenerator
     /**
      * @param bool $static
      */
-    protected function generateMethod(bool $static): void
+    private function generateMethod(bool $static): void
     {
         foreach ($this->methodList as $method) {
             if ($static !== $method->isStatic() || $method->isIsConstructor()) {
@@ -203,7 +260,7 @@ class ClassGenerator
     /**
      *
      */
-    protected function generateConstructor(): void
+    private function generateConstructor(): void
     {
         foreach ($this->methodList as $method) {
             if (!$method->isIsConstructor()) {

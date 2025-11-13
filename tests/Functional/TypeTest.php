@@ -1,15 +1,18 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
+
 namespace NitriaTest\Functional;
 
+use Codeception\Test\Unit;
 use Nitria\Type;
 
-class TypeTest extends \PHPUnit_Framework_TestCase
+class TypeTest extends Unit
 {
     const CLASS_NAME = 'Some\\Random\\Class';
 
-    public function testNoType() {
+    public function testNoType()
+    {
         $type = new Type(null);
         $this->assertSame(null, $type->getCodeType());
         $this->assertSame("mixed", $type->getDocBlockType());

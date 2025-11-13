@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Nitria;
 
@@ -31,7 +31,7 @@ class CodeWriter
     /**
      * @return string[]
      */
-    public function getCodeLineList() : array
+    public function getCodeLineList(): array
     {
         return $this->codeLineList;
     }
@@ -39,7 +39,7 @@ class CodeWriter
     /**
      * @return string
      */
-    public function getCode() : string
+    public function getCode(): string
     {
         return implode(PHP_EOL, $this->codeLineList);
     }
@@ -93,7 +93,7 @@ class CodeWriter
         if (!$strict) {
             return;
         }
-        $this->addCodeLine('declare(strict_types = 1);', 0, 2);
+        $this->addCodeLine('declare(strict_types=1);', 0, 2);
     }
 
 
@@ -149,11 +149,16 @@ class CodeWriter
     /**
      * @param string $classShortName
      * @param string|null $extends
-     * @param string[] $implementsList
+     * @param string[]|null $implementsList
+     * @param ClassType|null $classType
      */
-    public function addClassStart(string $classShortName, string $extends = null, array $implementsList = null): void
+    public function addClassStart(string $classShortName, ?string $extends, ?array $implementsList, ?ClassType $classType, ?ScalarType $enumType): void
     {
-        $line = 'class ' . trim($classShortName, "\\");
+        $line = $classType->value . ' ' . trim($classShortName, "\\");
+
+        if ($enumType) {
+            $line .= ': ' . $enumType->value;
+        }
 
         if ($extends !== null) {
             $line .= ' extends ' . $extends;
@@ -166,6 +171,24 @@ class CodeWriter
         $this->addCodeLine($line, 0);
         $this->addCodeLine("{", 0, 1);
     }
+
+    /**
+     * @param string $caseName
+     * @param string $caseValue
+     * @return void
+     */
+    public function addEnumCase(string $caseName, string $caseValue): void
+    {
+        $this->addCodeLine(
+            sprintf(
+                'case %s = %s;'
+                , $caseName,
+                $caseValue
+            ),
+            1
+        );
+    }
+
 
     /**
      *

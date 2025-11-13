@@ -6,6 +6,8 @@ namespace NitriaTest\End2End;
 
 use Codeception\Util\Debug;
 use Nitria\ClassGenerator;
+use Nitria\ClassType;
+use Nitria\ScalarType;
 
 class GeneratorTest extends End2EndTest
 {
@@ -226,13 +228,27 @@ class GeneratorTest extends End2EndTest
         $reflectClass = $this->getReflectClass($classGenerator);
         $staticProperties = $reflectClass->getStaticProperties();
 
-//        Debug::debug($staticProperties);
-//
 //        $this->assertSame(4, sizeof($staticProperties));
 //        $this->assertTrue(array_key_exists("iAmPrivat", $staticProperties));
 //        $this->assertTrue(array_key_exists("iAmProtected", $staticProperties));
 //        $this->assertTrue(array_key_exists("iAmPublic", $staticProperties));
 //        $this->assertTrue(array_key_exists("iAmPublicToo", $staticProperties));
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function testEnum()
+    {
+        $classGenerator = new ClassGenerator('Tests\EnumTest', true);
+        $classGenerator->setClassType(ClassType::Enum);
+        $classGenerator->addEnumCase('Test', "'test'");
+        $classGenerator->setEnumType(ScalarType::String);
+
+        $classGenerator->writeToPSR0(self::BASE_DIR);
+
+        Debug::confirm('asd');
+
     }
 
 
@@ -248,13 +264,13 @@ class GeneratorTest extends End2EndTest
         $classGenerator->writeToPSR0(self::BASE_DIR);
 
         $reflectClass = $this->getReflectClass($classGenerator);
-//        $staticProperties = $reflectClass->getStaticProperties();
-//        $this->assertSame(3, sizeof($staticProperties));
-//        $this->assertTrue(array_key_exists("iAmPrivat", $staticProperties));
-//        $this->assertTrue(array_key_exists("iAmProtected", $staticProperties));
-//        $this->assertTrue(array_key_exists("iAmPublic", $staticProperties));
-//
-//        $this->assertSame(23.122, $reflectClass->getStaticPropertyValue("iAmPublic"));
+        $staticProperties = $reflectClass->getStaticProperties();
+        $this->assertSame(3, sizeof($staticProperties));
+        $this->assertTrue(array_key_exists("iAmPrivat", $staticProperties));
+        $this->assertTrue(array_key_exists("iAmProtected", $staticProperties));
+        $this->assertTrue(array_key_exists("iAmPublic", $staticProperties));
+
+        $this->assertSame(23.122, $reflectClass->getStaticPropertyValue("iAmPublic"));
     }
 
 

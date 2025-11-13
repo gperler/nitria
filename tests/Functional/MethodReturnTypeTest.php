@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace NitriaTest\Functional;
 
+use Codeception\Test\Unit;
 use Nitria\MethodReturnType;
 use Nitria\Type;
 
-class MethodReturnTypeTest extends \PHPUnit_Framework_TestCase
+class MethodReturnTypeTest extends Unit
 {
 
     /**
