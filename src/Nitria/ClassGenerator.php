@@ -332,9 +332,9 @@ class ClassGenerator
      * @param string $name
      * @param string $value
      */
-    public function addConstant(string $name, string $value): void
+    public function addConstant(string $name, string $value, ScalarType $type = null): void
     {
-        $this->constantList[] = new Constant($name, $value, $this->indent);
+        $this->constantList[] = new Constant($name, $value, $this->indent, $type);
     }
 
 
